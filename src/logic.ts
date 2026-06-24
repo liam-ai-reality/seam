@@ -1,4 +1,4 @@
-import { GRADER_LADDER, INTEGRATION_APPROACHES, newId } from './constants'
+import { GRADER_LADDER, INTEGRATION_APPROACHES, newId } from './constants.ts'
 import type {
   GraderType,
   Integration,

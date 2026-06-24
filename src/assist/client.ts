@@ -2,7 +2,7 @@
 // output via a single forced tool, and delegates the actual call to an injected
 // transport. client.ts itself NEVER fetches.
 
-import { assistAvailable } from './gate'
+import { assistAvailable } from './gate.ts'
 import type {
   AssistMessage,
   AssistModel,

@@ -7,7 +7,10 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "test": "vitest run"
+    "test": "vitest run",
+    "eval": "node scripts/eval-capture.ts",
+    "eval:judge": "node scripts/eval-judge.ts",
+    "build:golden": "node scripts/build-golden.ts"
   },
   "dependencies": {
     "react": "^19.0.0",
