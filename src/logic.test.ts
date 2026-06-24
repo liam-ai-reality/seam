@@ -23,7 +23,7 @@ describe('seam scoring', () => {
     const cands = [cand('low', 2), cand('high', 5), cand('mid', 3)]
     const ranked = rankSeams(cands, equal)
     expect(ranked.map((r) => r.candidate.id)).toEqual(['high', 'mid', 'low'])
-    expect(ranked[0].rank).toBe(1)
+    expect(ranked[0]!.rank).toBe(1)
     expect(suggestedSeamId(cands, equal)).toBe('high')
   })
 

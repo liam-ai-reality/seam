@@ -40,7 +40,7 @@ export function rankSeams(cands: SeamCandidate[], w: SeamWeights): RankedSeam[] 
 /** The suggested first Assignment = top-ranked candidate. */
 export function suggestedSeamId(cands: SeamCandidate[], w: SeamWeights): string | null {
   const ranked = rankSeams(cands, w)
-  return ranked.length ? ranked[0].candidate.id : null
+  return ranked[0]?.candidate.id ?? null
 }
 
 // ---------- Stage 4: integration decision aid ----------
@@ -90,7 +90,7 @@ export const approachNotes = (a: IntegrationApproach): string => INTEGRATION_APP
 
 /** Cheapest sufficient grader: programmatic unless the output is free-form. */
 export function recommendGrader(freeFormOutput: boolean): GraderType {
-  return freeFormOutput ? 'llm-judge' : GRADER_LADDER[0]
+  return freeFormOutput ? 'llm-judge' : (GRADER_LADDER[0] ?? 'programmatic')
 }
 
 // ---------- Readiness gate ----------
