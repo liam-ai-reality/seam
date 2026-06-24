@@ -4,6 +4,7 @@ import { sampleScope } from './sample'
 import {
   isReady,
   rankSeams,
+  readinessGaps,
   recommendApproach,
   recommendGrader,
   seamScore,
@@ -62,5 +63,27 @@ describe('readiness gate', () => {
   })
   it('the worked sample is ready to build', () => {
     expect(isReady(sampleScope())).toBe(true)
+  })
+
+  it('a pillar toggled done with empty handling does not count', () => {
+    const s = sampleScope()
+    // Hollow out one pillar: still "done", but no handling text.
+    s.pillars = s.pillars.map((p, i) => (i === 0 ? { ...p, handling: '   ' } : p))
+    expect(isReady(s)).toBe(false)
+    expect(readinessGaps(s)).toContain(`Pillars: ${s.pillars[0]!.title} (no handling)`)
+  })
+
+  it('Stage 5 needs the online plan, cost-weighted quality, and a baseline', () => {
+    const s = sampleScope()
+    s.evalPlan = { ...s.evalPlan, online: '', costWeightedQuality: '', baseline: '' }
+    expect(isReady(s)).toBe(false)
+    expect(readinessGaps(s)).toContain('Failure modes & eval')
+  })
+
+  it('readinessGaps on a blank scope names every open stage and the pillars', () => {
+    const gaps = readinessGaps(newScope('blank'))
+    expect(gaps).toContain('Map the process')
+    expect(gaps).toContain('Failure modes & eval')
+    expect(gaps.some((g) => g.startsWith('Pillars:'))).toBe(true)
   })
 })

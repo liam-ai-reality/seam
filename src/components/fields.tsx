@@ -93,13 +93,14 @@ export function YesNo({ value, onChange }: { value: boolean | null; onChange: (v
   )
 }
 
-export function Toggle({ checked, onChange, label }: { checked: boolean; onChange: (v: boolean) => void; label: string }) {
+export function Toggle({ checked, onChange, label, disabled }: { checked: boolean; onChange: (v: boolean) => void; label: string; disabled?: boolean }) {
   return (
     <button
       type="button"
+      disabled={disabled}
       onClick={() => onChange(!checked)}
       className={`flex items-center gap-2 rounded-md border px-2 py-1 text-xs transition ${
-        checked ? 'border-emerald-500/60 bg-emerald-500/15 text-emerald-300' : 'border-slate-800 text-slate-500 hover:border-slate-700'
+        disabled ? 'cursor-not-allowed border-slate-800 text-slate-600 opacity-50' : checked ? 'border-emerald-500/60 bg-emerald-500/15 text-emerald-300' : 'border-slate-800 text-slate-500 hover:border-slate-700'
       }`}
     >
       <span className={`grid h-4 w-4 place-items-center rounded-sm border ${checked ? 'border-emerald-400 bg-emerald-400 text-slate-950' : 'border-slate-600'}`}>

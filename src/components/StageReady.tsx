@@ -35,18 +35,24 @@ export function StageReady({ scope, update }: StageProps) {
 
       {/* Pillars */}
       <div className="space-y-3">
-        {scope.pillars.map((p) => (
-          <div key={p.key} className="rounded-lg border border-slate-800 bg-slate-900/40 p-3">
-            <div className="mb-2 flex items-center justify-between gap-3">
-              <div>
-                <div className="font-medium text-slate-100">{p.title}</div>
-                <div className="text-xs text-slate-500">{p.description}</div>
+        {scope.pillars.map((p) => {
+          const hasHandling = p.handling.trim().length > 0
+          return (
+            <div key={p.key} className="rounded-lg border border-slate-800 bg-slate-900/40 p-3">
+              <div className="mb-2 flex items-center justify-between gap-3">
+                <div>
+                  <div className="font-medium text-slate-100">{p.title}</div>
+                  <div className="text-xs text-slate-500">{p.description}</div>
+                </div>
+                <div className="flex flex-col items-end gap-1">
+                  <Toggle checked={p.done} onChange={(v) => setPillar(p.key, { done: v })} label="done" disabled={!hasHandling} />
+                  {!hasHandling && <span className="text-xs text-slate-600">Say how it's handled to mark done</span>}
+                </div>
               </div>
-              <Toggle checked={p.done} onChange={(v) => setPillar(p.key, { done: v })} label="done" />
+              <TextArea value={p.handling} onChange={(v) => setPillar(p.key, { handling: v })} placeholder="How this deployment handles it" rows={2} />
             </div>
-            <TextArea value={p.handling} onChange={(v) => setPillar(p.key, { handling: v })} placeholder="How this deployment handles it" rows={2} />
-          </div>
-        ))}
+          )
+        })}
       </div>
 
       {/* Readiness gate */}
