@@ -8,16 +8,40 @@ import { Stepper } from './components/Stepper'
 
 type View = { kind: 'list' } | { kind: 'scope'; id: string; stage: StageKey }
 type SaveError = Extract<SaveResult, { ok: false }>
+type Theme = 'dark' | 'light'
+
+const THEME_KEY = 'seam.theme'
+
+function readTheme(): Theme {
+  try {
+    return localStorage.getItem(THEME_KEY) === 'light' ? 'light' : 'dark'
+  } catch {
+    return 'dark'
+  }
+}
 
 export function App() {
   const [scopes, setScopes] = useState<Scope[]>(loadScopes)
   const [view, setView] = useState<View>({ kind: 'list' })
   const [saveError, setSaveError] = useState<SaveError | null>(null)
+  const [theme, setTheme] = useState<Theme>(readTheme)
 
   useEffect(() => {
     const result = saveScopes(scopes)
     setSaveError(result.ok ? null : result)
   }, [scopes])
+
+  // Theme: default dark/Midnight = no attribute; light/Daybreak = data-theme="light".
+  useEffect(() => {
+    const root = document.documentElement
+    if (theme === 'light') root.setAttribute('data-theme', 'light')
+    else root.removeAttribute('data-theme')
+    try {
+      localStorage.setItem(THEME_KEY, theme)
+    } catch {
+      /* storage unavailable — theme is in-memory only */
+    }
+  }, [theme])
 
   const addScope = (s: Scope) => {
     setScopes((prev) => [s, ...prev])
@@ -27,10 +51,29 @@ export function App() {
   const updateCurrent = (id: string) => (fn: (s: Scope) => Scope) =>
     setScopes((prev) => prev.map((s) => (s.id === id ? { ...fn(s), updatedAt: new Date().toISOString() } : s)))
 
+  const activeScope = view.kind === 'scope' ? scopes.find((s) => s.id === view.id) : undefined
+
   return (
     <>
+      <header className="topbar no-print">
+        <a className="brand" href="#" onClick={(e) => { e.preventDefault(); setView({ kind: 'list' }) }}>
+          Reality<b>OS</b>
+        </a>
+        <span className="crumb">/ assessments · scoping</span>
+        {activeScope && <span className="scope-chip">{activeScope.name}</span>}
+        <span className="spacer" />
+        <button
+          type="button"
+          className="icon-btn"
+          aria-label="Switch theme"
+          title="Toggle light / dark"
+          onClick={() => setTheme((t) => (t === 'light' ? 'dark' : 'light'))}
+        >
+          {theme === 'light' ? '☾' : '☀'}
+        </button>
+      </header>
       {saveError && <SaveErrorBanner error={saveError} onDismiss={() => setSaveError(null)} />}
-      {body()}
+      <main className="surface">{body()}</main>
     </>
   )
 
@@ -69,21 +112,13 @@ export function App() {
 function SaveErrorBanner({ error, onDismiss }: { error: SaveError; onDismiss: () => void }) {
   const heading = error.kind === 'quota' ? 'Storage full' : 'Storage unavailable'
   return (
-    <div
-      role="alert"
-      className="sticky top-0 z-50 flex items-start gap-3 border-b border-rose-500/40 bg-rose-950/90 px-4 py-3 font-mono text-xs text-rose-200 backdrop-blur"
-    >
-      <span className="select-none text-rose-400">⚠</span>
-      <div className="flex-1">
-        <span className="font-semibold uppercase tracking-wider text-rose-300">{heading}</span>
-        <span className="ml-2 text-rose-200/90">{error.message}</span>
+    <div role="alert" className="alert-bar no-print">
+      <span className="mark" aria-hidden>⚠</span>
+      <div style={{ flex: 1 }}>
+        <span className="alert-h">{heading}</span>
+        <span className="alert-msg" style={{ marginLeft: '0.5rem' }}>{error.message}</span>
       </div>
-      <button
-        type="button"
-        onClick={onDismiss}
-        aria-label="Dismiss"
-        className="rounded border border-rose-500/40 px-2 py-0.5 text-rose-300 hover:bg-rose-500/20"
-      >
+      <button type="button" onClick={onDismiss} aria-label="Dismiss" className="btn ghost sm">
         ✕
       </button>
     </div>

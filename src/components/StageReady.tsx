@@ -31,23 +31,26 @@ export function StageReady({ scope, update, setStage }: StageReadyProps) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="stack" data-enter>
       <StageHeader n={6} title="Reliability pillars & brief" blurb="Complete the four pillars to unlock 'ready to build', then generate the brief." />
 
       {/* Pillars */}
-      <div className="space-y-3">
+      <div className="stack" style={{ gap: 'var(--space-3)' }}>
         {scope.pillars.map((p) => {
           const hasHandling = p.handling.trim().length > 0
           return (
-            <div key={p.key} className="rounded-lg border border-slate-800 bg-slate-900/40 p-3">
-              <div className="mb-2 flex items-center justify-between gap-3">
+            <div key={p.key} className="card stack" style={{ gap: 'var(--space-3)' }}>
+              <div className="spread" style={{ alignItems: 'flex-start' }}>
                 <div>
-                  <div className="font-medium text-slate-100">{p.title}</div>
-                  <div className="text-xs text-slate-500">{p.description}</div>
+                  <div className="row" style={{ gap: 'var(--space-2)' }}>
+                    <span className="card-h">{p.title}</span>
+                    {p.done && <span className="tag auto"><span className="light green" aria-hidden /> done</span>}
+                  </div>
+                  <div className="card-sub" style={{ marginTop: '0.15rem' }}>{p.description}</div>
                 </div>
-                <div className="flex flex-col items-end gap-1">
+                <div className="stack" style={{ gap: '0.35rem', alignItems: 'flex-end' }}>
                   <Toggle checked={p.done} onChange={(v) => setPillar(p.key, { done: v })} label="done" disabled={!hasHandling} />
-                  {!hasHandling && <span className="text-xs text-slate-600">Say how it's handled to mark done</span>}
+                  {!hasHandling && <span className="fine">Say how it's handled to mark done</span>}
                 </div>
               </div>
               <TextArea value={p.handling} onChange={(v) => setPillar(p.key, { handling: v })} placeholder="How this deployment handles it" rows={2} />
@@ -57,18 +60,19 @@ export function StageReady({ scope, update, setStage }: StageReadyProps) {
       </div>
 
       {/* Readiness gate */}
-      <div className={`rounded-lg border p-4 ${ready ? 'border-emerald-500/50 bg-emerald-500/10' : 'border-slate-800 bg-slate-900/40'}`}>
-        <div className="mb-3 flex items-center gap-2">
-          <span className={`font-mono text-sm font-semibold ${ready ? 'text-emerald-300' : 'text-slate-300'}`}>
-            {ready ? '● READY TO BUILD' : '○ NOT READY'}
-          </span>
+      <div className="panel" style={ready ? { borderColor: 'color-mix(in oklch, var(--color-accent-3) 50%, var(--line))' } : undefined}>
+        <div className="panel-head">
+          <h2 className="row" style={{ gap: 'var(--space-2)' }}>
+            <span className={`light ${ready ? 'green' : 'red'}`} aria-hidden />
+            {ready ? 'Ready to build' : 'Not ready'}
+          </h2>
         </div>
-        <ul className="grid grid-cols-1 gap-1 text-sm sm:grid-cols-2">
+        <ul className="grid cols-2" style={{ listStyle: 'none', padding: 0, margin: 0, gap: 'var(--space-2)' }}>
           {statuses.map((st) =>
             st.complete ? (
-              <li key={st.key} className="flex items-center gap-2">
-                <span className="text-emerald-400">✓</span>
-                <span className="text-slate-300">{st.label}</span>
+              <li key={st.key} className="row" style={{ gap: 'var(--space-2)' }}>
+                <span className="tag auto">✓</span>
+                <span className="muted">{st.label}</span>
               </li>
             ) : (
               <li key={st.key}>
@@ -76,36 +80,49 @@ export function StageReady({ scope, update, setStage }: StageReadyProps) {
                   type="button"
                   onClick={() => setStage(st.key as StageKey)}
                   title={st.hint}
-                  className="flex w-full items-start gap-2 rounded-md px-1 py-0.5 text-left hover:bg-slate-800/60"
+                  className="card clickable"
+                  style={{ width: '100%', textAlign: 'left', padding: 'var(--space-3)' }}
                 >
-                  <span className="text-slate-600">○</span>
-                  <span>
-                    <span className="text-cyan-300 underline decoration-dotted underline-offset-2">{st.label}</span>
-                    <span className="block text-xs text-slate-500">{st.hint}</span>
-                  </span>
+                  <div className="row" style={{ gap: 'var(--space-2)' }}>
+                    <span className="tag neutral">○</span>
+                    <span className="card-h" style={{ color: 'var(--color-accent)' }}>{st.label}</span>
+                  </div>
+                  <div className="card-sub" style={{ marginTop: '0.15rem' }}>{st.hint}</div>
                 </button>
               </li>
             ),
           )}
-          <li className="flex items-center gap-2">
-            <span className={pillarsDone(scope) ? 'text-emerald-400' : 'text-slate-600'}>{pillarsDone(scope) ? '✓' : '○'}</span>
-            <span className={pillarsDone(scope) ? 'text-slate-300' : 'text-slate-500'}>All four pillars done</span>
+          <li className="row" style={{ gap: 'var(--space-2)' }}>
+            <span className={`tag ${pillarsDone(scope) ? 'auto' : 'neutral'}`}>{pillarsDone(scope) ? '✓' : '○'}</span>
+            <span className="muted">All four pillars done</span>
           </li>
         </ul>
       </div>
 
       {/* Brief output */}
-      <div>
-        <div className="no-print mb-2 flex flex-wrap items-center gap-2">
-          <span className="font-mono text-xs uppercase tracking-wider text-slate-400">Scoping brief</span>
-          <div className="ml-auto flex gap-2">
-            <button onClick={copy} className="rounded-md border border-slate-700 px-3 py-1 text-xs text-slate-300 hover:border-cyan-500/60">{copied ? 'Copied ✓' : 'Copy'}</button>
-            <button onClick={download} className="rounded-md border border-slate-700 px-3 py-1 text-xs text-slate-300 hover:border-cyan-500/60">Download .md</button>
-            <button onClick={() => window.print()} className="rounded-md border border-slate-700 px-3 py-1 text-xs text-slate-300 hover:border-cyan-500/60">Print</button>
-            <button onClick={() => exportScope(scope)} className="rounded-md border border-slate-700 px-3 py-1 text-xs text-slate-300 hover:border-cyan-500/60">Export JSON</button>
+      <div className="panel">
+        <div className="panel-head no-print">
+          <h2>Scoping brief</h2>
+          <div className="btn-row">
+            <button onClick={copy} className="btn ghost sm">{copied ? 'Copied ✓' : 'Copy'}</button>
+            <button onClick={download} className="btn ghost sm">Download .md</button>
+            <button onClick={() => window.print()} className="btn ghost sm">Print</button>
+            <button onClick={() => exportScope(scope)} className="btn ghost sm">Export JSON</button>
           </div>
         </div>
-        <pre className="print-brief max-h-[28rem] overflow-auto rounded-lg border border-slate-800 bg-slate-950/80 p-4 text-xs leading-relaxed text-slate-300">
+        <pre
+          className="print-brief code"
+          style={{
+            maxHeight: '28rem',
+            overflow: 'auto',
+            borderRadius: 'var(--radius)',
+            border: '1px solid var(--line)',
+            background: 'var(--surface-0)',
+            padding: 'var(--space-4)',
+            lineHeight: 1.6,
+            whiteSpace: 'pre-wrap',
+          }}
+        >
           {brief}
         </pre>
       </div>
