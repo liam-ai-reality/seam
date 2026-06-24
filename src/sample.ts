@@ -14,7 +14,7 @@ export function sampleScope(): Scope {
     { id: newId(), name: 'Draft the final settlement letter', volume: 3, ruleBound: 2, lowJudgement: 1, lowBlastRadius: 1 },
     { id: newId(), name: 'Re-key claim data into the carrier portal', volume: 4, ruleBound: 5, lowJudgement: 5, lowBlastRadius: 3 },
   ]
-  const chosen = candidates[0]
+  const chosen = candidates[0]!
 
   const mkIntegration = (sys: { id: string; name: string }, fields: Partial<{ apiAvailable: boolean; authType: string; onPrem: boolean; uiStable: boolean; notes: string }>) => {
     const apiAvailable = fields.apiAvailable ?? null
