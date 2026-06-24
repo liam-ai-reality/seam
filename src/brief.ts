@@ -4,6 +4,11 @@ import type { Scope } from './types'
 
 const dash = (v: string) => (v.trim() ? v.trim() : '—')
 
+/** Escape a value for safe placement in a Markdown table cell. */
+export function escapeCell(v: string): string {
+  return v.replace(/\\/g, '\\\\').replace(/\|/g, '\\|')
+}
+
 /** One-paragraph executive summary, robust to half-filled scopes. */
 export function execSummary(s: Scope): string {
   const chosen = s.seamCandidates.find((c) => c.id === s.chosenSeamId)
@@ -11,19 +16,29 @@ export function execSummary(s: Scope): string {
   const approaches = [...new Set(s.integrations.filter((i) => i.approach).map((i) => INTEGRATION_APPROACHES[i.approach!].label))]
   const ready = isReady(s)
 
-  const parts: string[] = []
-  parts.push(
+  const sentences: string[] = []
+  sentences.push(
     chosen
       ? `**${s.name}** scopes "${chosen.name}" as the first Assignment carved out of ${who}'s process.`
       : `**${s.name}** scopes an automation out of ${who}'s process.`,
   )
-  if (s.processMap.trigger.trim()) parts.push(`It is triggered when ${lower(s.processMap.trigger.trim())}.`)
-  if (approaches.length) parts.push(`Integration is ${approaches.join(' + ')}.`)
-  parts.push(
-    `Quality is graded ${GRADERS[s.evalPlan.grader].label.toLowerCase()}, biased toward escalation when the agent is unsure.`,
+  if (s.processMap.trigger.trim()) sentences.push(`It is triggered when ${lower(s.processMap.trigger.trim())}.`)
+  if (approaches.length) sentences.push(`Integration is ${approaches.join(' + ')}.`)
+
+  const grader = GRADERS[s.evalPlan.grader].label.toLowerCase()
+  const stop = s.sop.stopConditions.trim()
+  if (stop) {
+    sentences.push(`Quality is graded ${grader}, and the agent stops to escalate when ${lower(stop)}.`)
+  } else {
+    sentences.push(`Quality is graded ${grader}.`)
+  }
+
+  sentences.push(
+    ready
+      ? 'All five stages and four reliability pillars are complete — ready to build.'
+      : `Not yet ready to build (${readinessGaps(s).join('; ')}).`,
   )
-  parts.push(ready ? 'All five stages and four reliability pillars are complete — ready to build.' : `Not yet ready to build (${readinessGaps(s).join('; ')}).`)
-  return parts.join(' ')
+  return sentences.join(' ')
 }
 
 const lower = (v: string) => v.charAt(0).toLowerCase() + v.slice(1)
@@ -56,7 +71,7 @@ export function generateBrief(s: Scope): string {
       const c = r.candidate
       const star = c.id === s.chosenSeamId ? ' ⭐' : ''
       out.push(
-        `| ${r.rank} | ${c.name}${star} | ${c.volume} | ${c.ruleBound} | ${c.lowJudgement} | ${c.lowBlastRadius} | ${r.score.toFixed(2)} |`,
+        `| ${r.rank} | ${escapeCell(c.name)}${star} | ${c.volume} | ${c.ruleBound} | ${c.lowJudgement} | ${c.lowBlastRadius} | ${r.score.toFixed(2)} |`,
       )
     }
     out.push('')

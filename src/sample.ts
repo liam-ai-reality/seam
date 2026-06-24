@@ -1,6 +1,6 @@
 import { newId, newPillars } from './constants'
 import { recommendApproach } from './logic'
-import type { Scope } from './types'
+import type { IntegrationApproach, Scope } from './types'
 
 /** A fully-worked sample so a new user can see the shape of a finished scope. */
 export function sampleScope(): Scope {
@@ -16,7 +16,7 @@ export function sampleScope(): Scope {
   ]
   const chosen = candidates[0]!
 
-  const mkIntegration = (sys: { id: string; name: string }, fields: Partial<{ apiAvailable: boolean; authType: string; onPrem: boolean; uiStable: boolean; notes: string }>) => {
+  const mkIntegration = (sys: { id: string; name: string }, fields: Partial<{ apiAvailable: boolean; authType: string; onPrem: boolean; uiStable: boolean; approach: IntegrationApproach; notes: string }>) => {
     const apiAvailable = fields.apiAvailable ?? null
     const onPrem = fields.onPrem ?? null
     return {
@@ -27,7 +27,7 @@ export function sampleScope(): Scope {
       authType: fields.authType ?? '',
       onPrem,
       uiStable: fields.uiStable ?? null,
-      approach: recommendApproach({ apiAvailable, onPrem }),
+      approach: fields.approach ?? recommendApproach({ apiAvailable, onPrem }),
       notes: fields.notes ?? '',
     }
   }
@@ -59,7 +59,7 @@ export function sampleScope(): Scope {
     integrations: [
       mkIntegration(sysSalesforce, { apiAvailable: true, authType: 'OAuth service account', onPrem: false, uiStable: true, notes: 'Use the API. OAuth service account, idempotent upserts keyed by claim ref, retry with backoff, respect 100 req/min limit.' }),
       mkIntegration(sysPortal, { apiAvailable: false, authType: 'Username/password', onPrem: false, uiStable: false, notes: 'Screen-driven. Layout changes monthly — screenshot every step, alert on selector miss, rotate the shared credential quarterly.' }),
-      mkIntegration(sysEmail, { apiAvailable: true, authType: 'OAuth (Graph API)', onPrem: false, uiStable: true, notes: 'Normalise → validate → dedupe. De-dupe on message-id, validate sender against the policy book, count rows ingested vs processed daily.' }),
+      mkIntegration(sysEmail, { apiAvailable: false, authType: 'OAuth (Graph API)', onPrem: false, uiStable: true, approach: 'files', notes: 'Normalise → validate → dedupe. De-dupe on message-id, validate sender against the policy book, count rows ingested vs processed daily.' }),
     ],
     evalPlan: {
       worstOutput: 'A fraud-flagged claim silently auto-routed to fast-track payout',
