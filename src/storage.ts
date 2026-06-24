@@ -65,12 +65,19 @@ function isQuotaError(err: unknown): boolean {
 }
 
 // ---------- shaping ----------
+//
+// These coercers are the single parse layer for untrusted Scope data — both
+// localStorage migration and imported files run through them. The optional
+// assist surface (src/assist/accept.ts) reuses them as its parse layer too, so
+// a model-proposed value lands in a Scope by exactly the same path as a loaded
+// or imported one. They are exported for that reuse; nothing else outside this
+// module should need them.
 
 const str = (v: unknown, fallback = ''): string => (typeof v === 'string' ? v : fallback)
 const boolOrNull = (v: unknown): boolean | null => (typeof v === 'boolean' ? v : null)
 
 /** Coerce to an integer clamped into [1, 5]; non-numbers fall back to 3. */
-const axis = (v: unknown): number => {
+export const axis = (v: unknown): number => {
   const n = typeof v === 'number' && Number.isFinite(v) ? Math.round(v) : 3
   return Math.min(5, Math.max(1, n))
 }
@@ -91,7 +98,7 @@ function shapeSystem(v: unknown, defaults: SystemRef): SystemRef {
   }
 }
 
-function shapeProcessMap(v: unknown, base: ProcessMap): ProcessMap {
+export function shapeProcessMap(v: unknown, base: ProcessMap): ProcessMap {
   const o = obj(v)
   return {
     who: str(o.who, base.who),
@@ -105,7 +112,7 @@ function shapeProcessMap(v: unknown, base: ProcessMap): ProcessMap {
   }
 }
 
-function shapeCandidate(v: unknown, i: number): SeamCandidate {
+export function shapeCandidate(v: unknown, i: number): SeamCandidate {
   const o = obj(v)
   return {
     id: str(o.id, `cand-${i}`),
