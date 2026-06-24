@@ -1,0 +1,33 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: dark;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: #020617; /* slate-950 */
+  color: #e2e8f0;      /* slate-200 */
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Print: only the generated brief, plain on white. */
+@media print {
+  body { background: #fff; color: #000; }
+  .no-print { display: none !important; }
+  .print-brief {
+    position: static !important;
+    white-space: pre-wrap;
+    font-family: ui-monospace, monospace;
+    font-size: 11pt;
+    color: #000;
+    background: #fff;
+    border: none !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+}
