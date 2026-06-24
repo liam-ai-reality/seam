@@ -1,0 +1,114 @@
+/* Hallmark tokens · RealityOS · genre: atmospheric · theme: Midnight (dark default) + Daybreak (light)
+ * paper-band: dark · display-style: geometric-sans · accent-hue: cool (phosphor cyan + violet)
+ * Ported verbatim from the RealityOS cockpit prototype (.ref/tokens.css :root + cockpit.css
+ * :root semantic surfaces + :root[data-theme="light"] Daybreak overrides). */
+:root {
+  /* color */
+  --color-paper:      oklch(15% 0.028 264);
+  --color-paper-2:    oklch(19% 0.030 264);
+  --color-paper-3:    oklch(24% 0.034 264);
+  --color-ink:        oklch(96% 0.010 250);
+  --color-ink-soft:   oklch(81% 0.014 255);
+  --color-ink-mute:   oklch(64% 0.018 258);
+  --color-line:       oklch(33% 0.026 262);
+  --color-line-soft:  oklch(27% 0.022 263);
+  --color-accent:     oklch(82% 0.150 200);   /* phosphor cyan */
+  --color-accent-2:   oklch(72% 0.170 295);   /* violet */
+  --color-accent-3:   oklch(78% 0.150 155);   /* mint (sparingly) */
+  --color-accent-ink: oklch(18% 0.04 264);
+  --color-focus:      oklch(86% 0.140 200);
+  --bloom-cyan:   oklch(82% 0.15 200 / 0.16);
+  --bloom-violet: oklch(72% 0.17 295 / 0.15);
+
+  /* type */
+  --font-display: "Space Grotesk", system-ui, sans-serif;
+  --font-body:    "Inter", system-ui, sans-serif;
+  --font-mono:    "IBM Plex Mono", ui-monospace, monospace;
+  --text-xs: 0.78rem; --text-sm: 0.9rem; --text-base: 1.06rem;
+  --text-lg: 1.28rem; --text-xl: 1.6rem; --text-2xl: 2.1rem;
+  --text-3xl: clamp(2.1rem, 3.5vw + 0.6rem, 3rem);
+  --text-display-s: clamp(2.6rem, 6vw + 0.5rem, 4.2rem);
+  --text-display:   clamp(3rem, 8vw + 0.5rem, 6.4rem);
+
+  /* space (4pt) */
+  --space-1: 0.25rem; --space-2: 0.5rem; --space-3: 0.75rem; --space-4: 1rem;
+  --space-5: 1.25rem; --space-6: 1.5rem; --space-8: 2rem; --space-10: 2.5rem;
+  --space-12: 3rem; --space-16: 4rem; --space-20: 5rem; --space-24: 6rem; --space-28: 7rem;
+
+  /* radius / rule / motion */
+  --radius-sm: 8px; --radius: 14px; --radius-lg: 20px; --radius-pill: 100px;
+  --rule: 1px solid var(--color-line);
+  --glow-cyan: 0 0 0 1px oklch(82% 0.15 200 / 0.2), 0 18px 60px oklch(10% 0.02 264 / 0.5);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast: 180ms; --dur: 600ms; --dur-slow: 900ms;
+
+  /* ---- cockpit semantic layer (Midnight) ---- */
+  /* contrast-lifted ink ladder */
+  --color-ink-soft: oklch(88% 0.012 255);
+  --color-ink-mute: oklch(74% 0.020 258);
+  --ink-faint:      oklch(66% 0.018 258);
+
+  /* semantic, theme-swappable surfaces */
+  --surface-0: oklch(15% 0.028 264);
+  --surface-1: oklch(19.5% 0.030 264);
+  --surface-2: oklch(23.5% 0.034 264);
+  --surface-3: oklch(28% 0.036 264);
+  --line:      var(--color-line);
+  --line-soft: var(--color-line-soft);
+
+  --topbar-bg: oklch(15% 0.028 264 / 0.82);
+  --bloom-a:   oklch(82% 0.15 200 / 0.10);
+  --bloom-b:   oklch(72% 0.17 295 / 0.09);
+  --scan:      oklch(82% 0.15 200 / 0.015);
+
+  /* depth: tight shadow + inset top highlight (machined edge), NOT a coloured halo */
+  --elev:    0 8px 24px oklch(8% 0.02 264 / 0.55);
+  --elev-sm: 0 4px 14px oklch(8% 0.02 264 / 0.45);
+  --edge-hi: inset 0 1px 0 oklch(100% 0 0 / 0.055);
+  /* reserved focal glow — used only on the live/active element */
+  --focal:   0 0 0 1px oklch(82% 0.15 200 / 0.4), 0 0 26px oklch(82% 0.15 200 / 0.20);
+  --ring:    0 0 0 2px var(--surface-0), 0 0 0 4px var(--color-focus);
+
+  --ease-cine: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-cine: 720ms;
+  --topbar-h: 52px;
+  color-scheme: dark;
+}
+
+/* ============================================================ Daybreak (light) */
+:root[data-theme="light"] {
+  --color-paper:      oklch(97% 0.006 250);
+  --color-paper-2:    oklch(99% 0.004 250);
+  --color-paper-3:    oklch(94.5% 0.008 250);
+  --color-ink:        oklch(26% 0.022 264);
+  --color-ink-soft:   oklch(40% 0.020 262);
+  --color-ink-mute:   oklch(52% 0.020 260);
+  --ink-faint:        oklch(60% 0.018 260);
+  --color-line:       oklch(88% 0.010 255);
+  --color-line-soft:  oklch(92% 0.008 255);
+  --color-accent:     oklch(60% 0.150 222);   /* darkened cyan holds contrast on white */
+  --color-accent-2:   oklch(53% 0.190 295);   /* darkened violet */
+  --color-accent-3:   oklch(55% 0.140 155);
+  --color-accent-ink: oklch(99% 0 0);
+  --color-focus:      oklch(58% 0.150 222);
+
+  --surface-0: oklch(97% 0.006 250);
+  --surface-1: oklch(99.2% 0.004 250);
+  --surface-2: oklch(100% 0 0);
+  --surface-3: oklch(95% 0.010 250);
+  --line:      oklch(88% 0.010 255);
+  --line-soft: oklch(92% 0.008 255);
+
+  --topbar-bg: oklch(99% 0.004 250 / 0.86);
+  --bloom-a:   oklch(70% 0.13 222 / 0.07);
+  --bloom-b:   oklch(60% 0.16 295 / 0.06);
+  --scan:      oklch(50% 0.05 260 / 0.012);
+
+  --elev:    0 1px 2px oklch(45% 0.03 264 / 0.08), 0 10px 26px oklch(45% 0.03 264 / 0.10);
+  --elev-sm: 0 1px 2px oklch(45% 0.03 264 / 0.07), 0 5px 14px oklch(45% 0.03 264 / 0.08);
+  --edge-hi: inset 0 1px 0 oklch(100% 0 0 / 0.7);
+  --focal:   0 0 0 1px oklch(60% 0.15 222 / 0.45), 0 0 20px oklch(60% 0.15 222 / 0.14);
+  color-scheme: light;
+}

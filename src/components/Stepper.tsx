@@ -42,16 +42,18 @@ export function Stepper({ scope, update, stage, setStage, onBack }: Props) {
     key === 'ready' ? ready : (statuses.find((s) => s.key === key)?.complete ?? false)
 
   return (
-    <div className="mx-auto flex min-h-screen max-w-3xl flex-col px-4 py-6">
+    <div className="wrap stack" style={{ minHeight: 'calc(100dvh - var(--topbar-h))' }}>
       {/* top bar */}
-      <div className="no-print mb-4 flex items-center gap-3">
-        <button onClick={onBack} className="rounded-md border border-slate-800 px-3 py-1 text-xs text-slate-400 hover:border-slate-600">← Scopes</button>
-        <h1 className="truncate text-base font-semibold text-slate-100">{scope.name}</h1>
-        {ready && <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 text-xs text-emerald-300">ready</span>}
+      <div className="no-print row" style={{ marginBottom: 0 }}>
+        <button onClick={onBack} className="btn ghost sm">← Scopes</button>
+        <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 600, letterSpacing: '-0.02em', color: 'var(--color-ink)', fontSize: '1.15rem', flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          {scope.name}
+        </h1>
+        {ready && <span className="tag auto"><span className="light green" /> ready</span>}
       </div>
 
       {/* progress indicator */}
-      <nav className="no-print mb-6 flex flex-wrap gap-1.5">
+      <nav className="no-print steps" style={{ marginBottom: 0 }}>
         {STAGES.map((s, i) => {
           const active = s.key === stage
           const done = stageComplete(s.key)
@@ -59,13 +61,9 @@ export function Stepper({ scope, update, stage, setStage, onBack }: Props) {
             <button
               key={s.key}
               onClick={() => setStage(s.key)}
-              className={`flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-xs transition ${
-                active ? 'border-cyan-500 bg-cyan-500/15 text-cyan-200' : 'border-slate-800 text-slate-400 hover:border-slate-700'
-              }`}
+              className={`s${active ? ' active' : ''}${done && !active ? ' done' : ''}`}
             >
-              <span className={`grid h-4 w-4 place-items-center rounded-full text-[10px] ${done ? 'bg-emerald-500 text-slate-950' : 'bg-slate-800 text-slate-400'}`}>
-                {done ? '✓' : i + 1}
-              </span>
+              <span className="ix">{done ? '✓' : i + 1}</span>
               {s.label}
             </button>
           )
@@ -73,7 +71,7 @@ export function Stepper({ scope, update, stage, setStage, onBack }: Props) {
       </nav>
 
       {/* active stage */}
-      <div className="flex-1">
+      <div style={{ flex: 1 }}>
         {stage === 'process' && <StageProcess scope={scope} update={update} />}
         {stage === 'seam' && <StageSeam scope={scope} update={update} />}
         {stage === 'sop' && <StageSop scope={scope} update={update} />}
@@ -83,14 +81,10 @@ export function Stepper({ scope, update, stage, setStage, onBack }: Props) {
       </div>
 
       {/* prev / next */}
-      <div className="no-print mt-8 flex items-center justify-between border-t border-slate-800 pt-4">
-        <button onClick={() => go(-1)} disabled={idx === 0} className="rounded-md border border-slate-800 px-4 py-2 text-sm text-slate-300 disabled:opacity-30 enabled:hover:border-slate-600">
-          ← Prev
-        </button>
-        <span className="font-mono text-xs text-slate-600">Alt + ← → to move · {idx + 1} / {STAGES.length}</span>
-        <button onClick={() => go(1)} disabled={idx === STAGES.length - 1} className="rounded-md border border-slate-800 px-4 py-2 text-sm text-slate-300 disabled:opacity-30 enabled:hover:border-cyan-500/60">
-          Next →
-        </button>
+      <div className="no-print spread" style={{ borderTop: '1px solid var(--line)', paddingTop: 'var(--space-4)', marginTop: 'var(--space-4)' }}>
+        <button onClick={() => go(-1)} disabled={idx === 0} className="btn ghost">← Prev</button>
+        <span className="fine">Alt + ← → to move · {idx + 1} / {STAGES.length}</span>
+        <button onClick={() => go(1)} disabled={idx === STAGES.length - 1} className="btn ghost">Next →</button>
       </div>
     </div>
   )
