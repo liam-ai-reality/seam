@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { STAGES, type StageKey } from '../constants'
 import { isReady, stageStatuses } from '../logic'
 import type { Scope } from '../types'
@@ -21,6 +21,14 @@ export function Stepper({ scope, update, stage, setStage, onBack }: Props) {
   const idx = STAGES.findIndex((s) => s.key === stage)
   const statuses = stageStatuses(scope)
   const ready = isReady(scope)
+  const bodyRef = useRef<HTMLDivElement>(null)
+
+  // Reveal the current stage's [data-enter] content. Done synchronously after
+  // paint (not via rAF, which hidden tabs throttle) so the static .in end-state
+  // applies even when the tab is backgrounded — content can never stay invisible.
+  useEffect(() => {
+    bodyRef.current?.querySelectorAll('[data-enter]').forEach((el) => el.classList.add('in'))
+  }, [stage])
 
   const go = (delta: number) => {
     const next = STAGES[idx + delta]
@@ -72,7 +80,7 @@ export function Stepper({ scope, update, stage, setStage, onBack }: Props) {
       </nav>
 
       {/* active stage */}
-      <div style={{ flex: 1 }}>
+      <div ref={bodyRef} style={{ flex: 1 }}>
         {stage === 'process' && <StageProcess scope={scope} update={update} />}
         {stage === 'seam' && <StageSeam scope={scope} update={update} />}
         {stage === 'sop' && <StageSop scope={scope} update={update} />}
