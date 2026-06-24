@@ -49,14 +49,15 @@ export function TextArea(props: {
 }
 
 /** 1–5 score selector. */
-export function Pills({ value, onChange }: { value: number; onChange: (v: number) => void }) {
+export function Pills({ value, onChange, ariaLabel }: { value: number; onChange: (v: number) => void; ariaLabel?: string }) {
   return (
-    <div className="pill-row">
+    <div className="pill-row" role="group" aria-label={ariaLabel}>
       {[1, 2, 3, 4, 5].map((n) => (
         <button
           key={n}
           type="button"
           onClick={() => onChange(n)}
+          aria-pressed={value === n}
           className={`pill${value === n ? ' on' : ''}`}
         >
           {n}
@@ -67,14 +68,15 @@ export function Pills({ value, onChange }: { value: number; onChange: (v: number
 }
 
 /** Tri-state yes / no toggle (null = unanswered). */
-export function YesNo({ value, onChange }: { value: boolean | null; onChange: (v: boolean) => void }) {
+export function YesNo({ value, onChange, ariaLabel }: { value: boolean | null; onChange: (v: boolean) => void; ariaLabel?: string }) {
   return (
-    <div className="pill-row">
+    <div className="pill-row" role="group" aria-label={ariaLabel}>
       {([['Yes', true], ['No', false]] as const).map(([label, v]) => (
         <button
           key={label}
           type="button"
           onClick={() => onChange(v)}
+          aria-pressed={value === v}
           className={`pill${value === v ? ' on' : ''}`}
         >
           {label}
@@ -90,6 +92,7 @@ export function Toggle({ checked, onChange, label, disabled }: { checked: boolea
       type="button"
       disabled={disabled}
       onClick={() => onChange(!checked)}
+      aria-pressed={checked}
       className={`pill box${checked ? ' on mint' : ''}`}
     >
       <span className="tick">{checked ? '✓' : ''}</span>

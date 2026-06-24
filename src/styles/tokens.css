@@ -17,6 +17,7 @@
   --color-accent-3:   oklch(78% 0.150 155);   /* mint (sparingly) */
   --color-accent-ink: oklch(18% 0.04 264);
   --color-focus:      oklch(86% 0.140 200);
+  --color-warn:       oklch(80% 0.13 80);      /* amber caveat */
   --bloom-cyan:   oklch(82% 0.15 200 / 0.16);
   --bloom-violet: oklch(72% 0.17 295 / 0.15);
 
@@ -93,6 +94,7 @@
   --color-accent-3:   oklch(55% 0.140 155);
   --color-accent-ink: oklch(99% 0 0);
   --color-focus:      oklch(58% 0.150 222);
+  --color-warn:       oklch(62% 0.13 80);      /* darkened amber holds contrast on white */
 
   --surface-0: oklch(97% 0.006 250);
   --surface-1: oklch(99.2% 0.004 250);

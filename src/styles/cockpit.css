@@ -45,6 +45,7 @@ button { font-family: inherit; }
 .code, .log, code { font-family: var(--font-mono); font-size: 0.82em; color: var(--color-ink-soft); letter-spacing: 0; }
 .log.accent, .code.accent { color: var(--color-accent); }
 .fine { font-family: var(--font-body); font-size: var(--text-xs); line-height: 1.5; color: var(--color-ink-mute); }
+.caveat { color: var(--color-warn); font-family: var(--font-body); font-size: var(--text-xs); line-height: 1.5; }
 
 /* ============================================================ top bar */
 .topbar { position: sticky; top: 0; z-index: 60; display: flex; align-items: center; gap: var(--space-4);
@@ -148,7 +149,7 @@ button { font-family: inherit; }
 /* focus-visible rings — instant, never animated, on every interactive element */
 .btn:focus-visible, .icon-btn:focus-visible, .cite:focus-visible, .steps .s:focus-visible,
 .field input:focus-visible, .field textarea:focus-visible, .field select:focus-visible,
-.card.clickable:focus-visible, .pill:focus-visible,
+.card.clickable:focus-visible, .pill:focus-visible, .scope-open:focus-visible,
 [tabindex]:focus-visible { outline: none; box-shadow: var(--ring); border-radius: var(--radius); }
 .field input:focus-visible, .field textarea:focus-visible { border-color: var(--color-accent); }
 
@@ -208,7 +209,7 @@ button { font-family: inherit; }
 @keyframes toastIn { from { opacity: 0; transform: translateY(12px) scale(0.98); } to { opacity: 1; transform: none; } }
 
 /* sticky banner alert (save errors) */
-.alert-bar { position: sticky; top: 0; z-index: 70; display: flex; align-items: flex-start; gap: var(--space-3);
+.alert-bar { position: sticky; top: var(--topbar-h); z-index: 70; display: flex; align-items: flex-start; gap: var(--space-3);
   padding: 0.72rem var(--space-6); border-bottom: 1px solid color-mix(in oklch, oklch(66% 0.18 25) 45%, var(--line));
   background: color-mix(in oklch, oklch(40% 0.12 25) 22%, var(--surface-1)); color: var(--color-ink);
   box-shadow: var(--edge-hi); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
@@ -228,8 +229,12 @@ button { font-family: inherit; }
 hr.sep { border: 0; border-top: 1px solid var(--line); margin: var(--space-5) 0; }
 
 /* ============================================================ view-enter choreography */
-[data-enter] { opacity: 0; transform: translateY(16px); }
-[data-enter].in { opacity: 1; transform: none; transition: opacity var(--dur-cine) var(--ease-cine), transform var(--dur-cine) var(--ease-cine); }
+/* PURE-CSS entrance — runs on mount, can never get stuck at opacity:0 (no JS .in toggle). */
+[data-enter] { animation: viewIn var(--dur-cine) var(--ease-cine) both; }
+@keyframes viewIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: none; }
+}
 
 /* ============================================================ mobile topbar condense */
 @media (max-width: 760px) {

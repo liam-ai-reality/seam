@@ -107,13 +107,13 @@ function ScopeRow({ scope, onOpen, onRename, onDelete }: { scope: Scope; onOpen:
           />
         </div>
       ) : (
-        <button onClick={() => onOpen(scope.id)} className="cite" style={{ flex: 1, justifyContent: 'flex-start', border: 0, background: 'transparent', padding: 0, color: 'inherit', cursor: 'pointer', textAlign: 'left', display: 'block' }}>
+        <button onClick={() => onOpen(scope.id)} className="row scope-open" style={{ flex: 1, border: 0, background: 'transparent', padding: 0, margin: 0, color: 'inherit', font: 'inherit', cursor: 'pointer', textAlign: 'left', display: 'block', width: '100%' }}>
           <div className="card-h">{scope.name}</div>
           <div className="card-sub" style={{ marginTop: '0.15rem' }}>{done}/5 stages · updated {new Date(scope.updatedAt).toLocaleDateString()}</div>
         </button>
       )}
       {ready && (
-        <span className="tag auto"><span className="light green" /> ready</span>
+        <span className="tag auto"><span className="light green" aria-hidden /> ready</span>
       )}
       <button onClick={() => setEditing(true)} className="btn ghost sm">rename</button>
       <button

@@ -44,7 +44,7 @@ export function StageReady({ scope, update, setStage }: StageReadyProps) {
                 <div>
                   <div className="row" style={{ gap: 'var(--space-2)' }}>
                     <span className="card-h">{p.title}</span>
-                    {p.done && <span className="tag auto"><span className="light green" /> done</span>}
+                    {p.done && <span className="tag auto"><span className="light green" aria-hidden /> done</span>}
                   </div>
                   <div className="card-sub" style={{ marginTop: '0.15rem' }}>{p.description}</div>
                 </div>
@@ -63,7 +63,7 @@ export function StageReady({ scope, update, setStage }: StageReadyProps) {
       <div className="panel" style={ready ? { borderColor: 'color-mix(in oklch, var(--color-accent-3) 50%, var(--line))' } : undefined}>
         <div className="panel-head">
           <h2 className="row" style={{ gap: 'var(--space-2)' }}>
-            <span className={`light ${ready ? 'green' : 'red'}`} />
+            <span className={`light ${ready ? 'green' : 'red'}`} aria-hidden />
             {ready ? 'Ready to build' : 'Not ready'}
           </h2>
         </div>

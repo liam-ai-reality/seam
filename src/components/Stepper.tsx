@@ -49,11 +49,11 @@ export function Stepper({ scope, update, stage, setStage, onBack }: Props) {
         <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 600, letterSpacing: '-0.02em', color: 'var(--color-ink)', fontSize: '1.15rem', flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
           {scope.name}
         </h1>
-        {ready && <span className="tag auto"><span className="light green" /> ready</span>}
+        {ready && <span className="tag auto"><span className="light green" aria-hidden /> ready</span>}
       </div>
 
       {/* progress indicator */}
-      <nav className="no-print steps" style={{ marginBottom: 0 }}>
+      <nav className="no-print steps" aria-label="Scoping stages" style={{ marginBottom: 0 }}>
         {STAGES.map((s, i) => {
           const active = s.key === stage
           const done = stageComplete(s.key)
@@ -61,6 +61,7 @@ export function Stepper({ scope, update, stage, setStage, onBack }: Props) {
             <button
               key={s.key}
               onClick={() => setStage(s.key)}
+              aria-current={active ? 'step' : undefined}
               className={`s${active ? ' active' : ''}${done && !active ? ' done' : ''}`}
             >
               <span className="ix">{done ? '✓' : i + 1}</span>

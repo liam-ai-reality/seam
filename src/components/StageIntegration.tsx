@@ -51,21 +51,21 @@ export function StageIntegration({ scope, update }: StageProps) {
           <div key={row.systemId} className="panel stack">
             <div className="panel-head">
               <h2>{row.systemName}</h2>
-              {rec && <span className="tag auto"><span className="light green" /> recommended · {INTEGRATION_APPROACHES[rec].label}</span>}
+              {rec && <span className="tag auto"><span className="light green" aria-hidden /> recommended · {INTEGRATION_APPROACHES[rec].label}</span>}
             </div>
 
             <div className="grid cols-2">
               <Field label="API available?">
-                <YesNo value={row.apiAvailable} onChange={(v) => patch(row, { apiAvailable: v })} />
+                <YesNo value={row.apiAvailable} onChange={(v) => patch(row, { apiAvailable: v })} ariaLabel="API available?" />
               </Field>
               <Field label="Auth type">
                 <TextInput value={row.authType} onChange={(v) => patch(row, { authType: v })} placeholder="OAuth / service account / SSO..." />
               </Field>
               <Field label="On-prem?">
-                <YesNo value={row.onPrem} onChange={(v) => patch(row, { onPrem: v })} />
+                <YesNo value={row.onPrem} onChange={(v) => patch(row, { onPrem: v })} ariaLabel="On-prem?" />
               </Field>
               <Field label="UI stable?">
-                <YesNo value={row.uiStable} onChange={(v) => patch(row, { uiStable: v })} />
+                <YesNo value={row.uiStable} onChange={(v) => patch(row, { uiStable: v })} ariaLabel="UI stable?" />
               </Field>
             </div>
 
@@ -98,7 +98,7 @@ export function StageIntegration({ scope, update }: StageProps) {
               {warnings.length > 0 && (
                 <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 'var(--space-1)' }}>
                   {warnings.map((w) => (
-                    <li key={w} className="fine row" style={{ gap: '0.4rem', color: 'oklch(80% 0.13 80)', alignItems: 'flex-start' }}>
+                    <li key={w} className="caveat row" style={{ gap: '0.4rem', alignItems: 'flex-start' }}>
                       <span aria-hidden>⚠</span>
                       <span>{w}</span>
                     </li>

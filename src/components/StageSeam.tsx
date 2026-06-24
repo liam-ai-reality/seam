@@ -51,7 +51,7 @@ export function StageSeam({ scope, update }: StageProps) {
           {SEAM_AXES.map((a) => (
             <div key={a.key} className="stack" style={{ gap: 'var(--space-2)' }}>
               <span className="lbl">{a.label}</span>
-              <Pills value={scope.seamWeights[a.key]} onChange={(v) => setWeight(a.key, v)} />
+              <Pills value={scope.seamWeights[a.key]} onChange={(v) => setWeight(a.key, v)} ariaLabel={`${a.label} weight`} />
             </div>
           ))}
         </div>
@@ -83,9 +83,14 @@ export function StageSeam({ scope, update }: StageProps) {
                     onChange={(e) => patchCandidate(c.id, { name: e.target.value })}
                   />
                 </div>
-                <div className="kpi" style={{ textAlign: 'right' }} title="weighted automate-first score">
-                  <div className="n tnum" style={{ fontSize: '1.5rem' }}>{r.score.toFixed(2)}</div>
-                  <div className="l">rank #{r.rank}</div>
+                <div
+                  className="kpi"
+                  style={{ textAlign: 'right' }}
+                  title="weighted automate-first score"
+                  aria-label={`Weighted score ${r.score.toFixed(2)} of 5, rank ${r.rank}`}
+                >
+                  <div className="n tnum" style={{ fontSize: '1.5rem' }} aria-hidden>{r.score.toFixed(2)}</div>
+                  <div className="l" aria-hidden>rank #{r.rank}</div>
                 </div>
                 <button type="button" onClick={() => removeCandidate(c.id)} className="btn danger sm" aria-label="Remove candidate">
                   ✕
@@ -100,7 +105,7 @@ export function StageSeam({ scope, update }: StageProps) {
                 {SEAM_AXES.map((a) => (
                   <div key={a.key} className="stack" style={{ gap: 'var(--space-2)' }}>
                     <span className="lbl" title={a.hint}>{a.label}</span>
-                    <Pills value={c[a.key]} onChange={(v) => patchCandidate(c.id, { [a.key]: v } as Partial<SeamCandidate>)} />
+                    <Pills value={c[a.key]} onChange={(v) => patchCandidate(c.id, { [a.key]: v } as Partial<SeamCandidate>)} ariaLabel={a.label} />
                   </div>
                 ))}
               </div>
@@ -114,7 +119,7 @@ export function StageSeam({ scope, update }: StageProps) {
                   {isChosen ? '✓ First Assignment' : 'Choose as first'}
                 </button>
                 {isSuggested && !isChosen && (
-                  <span className="tag auto"><span className="light green" /> suggested · top score</span>
+                  <span className="tag auto"><span className="light green" aria-hidden /> suggested · top score</span>
                 )}
               </div>
             </div>
