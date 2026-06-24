@@ -98,7 +98,8 @@ export function generateBrief(s: Scope): string {
   if (s.integrations.length) {
     for (const i of s.integrations) {
       const label = i.approach ? INTEGRATION_APPROACHES[i.approach].label : 'Not yet decided'
-      out.push(`- **${i.systemName}** → ${label}`)
+      const auth = i.authType.trim() ? ` (auth: ${i.authType.trim()})` : ''
+      out.push(`- **${i.systemName}** → ${label}${auth}`)
       if (i.notes.trim()) out.push(`  - ${i.notes.trim()}`)
     }
   } else {

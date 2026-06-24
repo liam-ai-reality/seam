@@ -86,6 +86,23 @@ export function reconcileIntegrations(scope: Scope): Integration[] {
 /** Canonical notes for an approach. */
 export const approachNotes = (a: IntegrationApproach): string => INTEGRATION_APPROACHES[a].notes
 
+/**
+ * Brittleness/auth warnings for a chosen integration. Pure. A screen-scraping
+ * approach is inherently fragile; an explicitly *unstable* UI makes it worse,
+ * so it earns a stronger warning than the baseline screen caveat.
+ */
+export function approachWarnings(i: Integration): string[] {
+  const warnings: string[] = []
+  if (i.approach === 'screen') {
+    warnings.push(
+      i.uiStable === false
+        ? 'Screen-scraping an unstable UI: expect frequent breakage — pin selectors, add change-detection, and budget for ongoing maintenance.'
+        : 'Screen-scraping is brittle: confirm the UI is stable and add change-detection.',
+    )
+  }
+  return warnings
+}
+
 // ---------- Stage 5: grader chooser ----------
 
 /** Cheapest sufficient grader: programmatic unless the output is free-form. */

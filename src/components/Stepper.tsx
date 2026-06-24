@@ -79,7 +79,7 @@ export function Stepper({ scope, update, stage, setStage, onBack }: Props) {
         {stage === 'sop' && <StageSop scope={scope} update={update} />}
         {stage === 'integration' && <StageIntegration scope={scope} update={update} />}
         {stage === 'eval' && <StageEval scope={scope} update={update} />}
-        {stage === 'ready' && <StageReady scope={scope} update={update} />}
+        {stage === 'ready' && <StageReady scope={scope} update={update} setStage={setStage} />}
       </div>
 
       {/* prev / next */}

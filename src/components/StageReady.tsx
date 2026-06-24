@@ -1,11 +1,12 @@
 import { useMemo, useState } from 'react'
 import { generateBrief } from '../brief'
+import type { StageKey } from '../constants'
 import { isReady, pillarsDone, stageStatuses } from '../logic'
 import { exportScope } from '../storage'
-import type { StageProps } from './stage'
+import type { StageReadyProps } from './stage'
 import { StageHeader, TextArea, Toggle } from './fields'
 
-export function StageReady({ scope, update }: StageProps) {
+export function StageReady({ scope, update, setStage }: StageReadyProps) {
   const statuses = stageStatuses(scope)
   const ready = isReady(scope)
   const brief = useMemo(() => generateBrief(scope), [scope])
@@ -63,12 +64,29 @@ export function StageReady({ scope, update }: StageProps) {
           </span>
         </div>
         <ul className="grid grid-cols-1 gap-1 text-sm sm:grid-cols-2">
-          {statuses.map((st) => (
-            <li key={st.key} className="flex items-center gap-2">
-              <span className={st.complete ? 'text-emerald-400' : 'text-slate-600'}>{st.complete ? '✓' : '○'}</span>
-              <span className={st.complete ? 'text-slate-300' : 'text-slate-500'}>{st.label}</span>
-            </li>
-          ))}
+          {statuses.map((st) =>
+            st.complete ? (
+              <li key={st.key} className="flex items-center gap-2">
+                <span className="text-emerald-400">✓</span>
+                <span className="text-slate-300">{st.label}</span>
+              </li>
+            ) : (
+              <li key={st.key}>
+                <button
+                  type="button"
+                  onClick={() => setStage(st.key as StageKey)}
+                  title={st.hint}
+                  className="flex w-full items-start gap-2 rounded-md px-1 py-0.5 text-left hover:bg-slate-800/60"
+                >
+                  <span className="text-slate-600">○</span>
+                  <span>
+                    <span className="text-cyan-300 underline decoration-dotted underline-offset-2">{st.label}</span>
+                    <span className="block text-xs text-slate-500">{st.hint}</span>
+                  </span>
+                </button>
+              </li>
+            ),
+          )}
           <li className="flex items-center gap-2">
             <span className={pillarsDone(scope) ? 'text-emerald-400' : 'text-slate-600'}>{pillarsDone(scope) ? '✓' : '○'}</span>
             <span className={pillarsDone(scope) ? 'text-slate-300' : 'text-slate-500'}>All four pillars done</span>
