@@ -1,8 +1,9 @@
-import { Component, Suspense, lazy, useEffect, useState, type ReactNode } from 'react'
+import { Suspense, lazy, useEffect, useState } from 'react'
 import { newScope, type StageKey } from './constants'
 import { loadScopes, saveScopes, type SaveResult } from './storage'
 import { sampleScope } from './sample'
 import type { Scope } from './types'
+import { AssistBoundary } from './components/AssistBoundary'
 import { ScopeList } from './components/ScopeList'
 import { Stepper } from './components/Stepper'
 
@@ -21,17 +22,6 @@ const CapturePanel = lazy<CapturePanelModule['default']>(() =>
     () => ({ default: () => null }) as unknown as CapturePanelModule,
   ),
 )
-
-/** Swallows any error from the optional assist subtree so v1 is never affected. */
-class AssistBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
-  state = { failed: false }
-  static getDerivedStateFromError() {
-    return { failed: true }
-  }
-  render() {
-    return this.state.failed ? null : this.props.children
-  }
-}
 
 function readTheme(): Theme {
   try {
