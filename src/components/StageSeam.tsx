@@ -36,21 +36,21 @@ export function StageSeam({ scope, update }: StageProps) {
     update((s) => ({ ...s, seamWeights: { ...s.seamWeights, [key]: v } }))
 
   return (
-    <div className="space-y-5">
+    <div className="stack" data-enter>
       <StageHeader n={2} title="Find the seam" blurb="Scope a slice, not the whole process. Score each candidate sub-task 1–5; the top score is the suggested first Assignment." />
 
       {/* Weights */}
-      <div className="rounded-lg border border-slate-800 bg-slate-900/40 p-3">
-        <div className="mb-2 flex items-center justify-between">
-          <span className="font-mono text-xs uppercase tracking-wider text-slate-400">Axis weights</span>
-          <button type="button" onClick={() => update((s) => ({ ...s, seamWeights: { ...DEFAULT_WEIGHTS } }))} className="text-xs text-slate-500 hover:text-cyan-400">
+      <div className="panel">
+        <div className="panel-head">
+          <h2>Axis weights</h2>
+          <button type="button" onClick={() => update((s) => ({ ...s, seamWeights: { ...DEFAULT_WEIGHTS } }))} className="btn ghost sm">
             reset to equal
           </button>
         </div>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div className="grid cols-4">
           {SEAM_AXES.map((a) => (
-            <div key={a.key}>
-              <div className="mb-1 text-xs text-slate-400">{a.label}</div>
+            <div key={a.key} className="stack" style={{ gap: 'var(--space-2)' }}>
+              <span className="lbl">{a.label}</span>
               <Pills value={scope.seamWeights[a.key]} onChange={(v) => setWeight(a.key, v)} />
             </div>
           ))}
@@ -58,62 +58,78 @@ export function StageSeam({ scope, update }: StageProps) {
       </div>
 
       {/* Candidates */}
-      <div className="space-y-3">
+      <div className="stack" style={{ gap: 'var(--space-3)' }}>
         {scope.seamCandidates.length === 0 && (
-          <p className="rounded-lg border border-dashed border-slate-800 p-6 text-center text-sm text-slate-600">
-            No candidates yet. Add the sub-tasks you could carve out of the process.
-          </p>
+          <div className="empty">
+            <div className="big">No candidates yet</div>
+            <p className="muted">Add the sub-tasks you could carve out of the process.</p>
+          </div>
         )}
         {scope.seamCandidates.map((c) => {
           const r = ranked.find((x) => x.candidate.id === c.id)!
           const isSuggested = c.id === suggestedId
           const isChosen = c.id === scope.chosenSeamId
           return (
-            <div key={c.id} className={`rounded-lg border p-3 ${isChosen ? 'border-cyan-500/60 bg-cyan-500/5' : 'border-slate-800 bg-slate-900/40'}`}>
-              <div className="mb-3 flex items-center gap-2">
-                <input
-                  className="flex-1 rounded-md border border-slate-800 bg-slate-950/60 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-600 outline-none focus:border-cyan-500/70"
-                  value={c.name}
-                  placeholder="Candidate sub-task"
-                  onChange={(e) => patchCandidate(c.id, { name: e.target.value })}
-                />
-                <span className="rounded-md bg-slate-800 px-2 py-1 font-mono text-xs text-slate-300" title="weighted automate-first score">
-                  {r.score.toFixed(2)}
-                </span>
-                <span className="font-mono text-xs text-slate-500">#{r.rank}</span>
-                <button type="button" onClick={() => removeCandidate(c.id)} className="rounded-md border border-slate-800 px-2 py-1 text-xs text-slate-500 hover:border-rose-500/50 hover:text-rose-400">
+            <div
+              key={c.id}
+              className="card"
+              style={isChosen ? { borderColor: 'var(--color-accent)', boxShadow: 'var(--focal), var(--edge-hi)' } : undefined}
+            >
+              <div className="spread" style={{ marginBottom: 'var(--space-3)', flexWrap: 'nowrap' }}>
+                <div className="field" style={{ margin: 0, flex: 1 }}>
+                  <input
+                    value={c.name}
+                    placeholder="Candidate sub-task"
+                    onChange={(e) => patchCandidate(c.id, { name: e.target.value })}
+                  />
+                </div>
+                <div className="kpi" style={{ textAlign: 'right' }} title="weighted automate-first score">
+                  <div className="n tnum" style={{ fontSize: '1.5rem' }}>{r.score.toFixed(2)}</div>
+                  <div className="l">rank #{r.rank}</div>
+                </div>
+                <button type="button" onClick={() => removeCandidate(c.id)} className="btn danger sm" aria-label="Remove candidate">
                   ✕
                 </button>
               </div>
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+
+              <div className="meter thin" style={{ marginBottom: 'var(--space-3)' }} aria-hidden>
+                <span style={{ width: `${(r.score / 5) * 100}%` }} />
+              </div>
+
+              <div className="grid cols-4">
                 {SEAM_AXES.map((a) => (
-                  <div key={a.key}>
-                    <div className="mb-1 text-xs text-slate-500" title={a.hint}>{a.label}</div>
+                  <div key={a.key} className="stack" style={{ gap: 'var(--space-2)' }}>
+                    <span className="lbl" title={a.hint}>{a.label}</span>
                     <Pills value={c[a.key]} onChange={(v) => patchCandidate(c.id, { [a.key]: v } as Partial<SeamCandidate>)} />
                   </div>
                 ))}
               </div>
-              <div className="mt-3 flex items-center gap-3">
+
+              <div className="row" style={{ marginTop: 'var(--space-3)' }}>
                 <button
                   type="button"
                   onClick={() => choose(c.id)}
-                  className={`rounded-md border px-3 py-1 text-xs transition ${isChosen ? 'border-cyan-500 bg-cyan-500/20 text-cyan-300' : 'border-slate-700 text-slate-400 hover:border-cyan-500/60'}`}
+                  className={isChosen ? 'btn sm' : 'btn ghost sm'}
                 >
                   {isChosen ? '✓ First Assignment' : 'Choose as first'}
                 </button>
-                {isSuggested && !isChosen && <span className="text-xs text-amber-400">★ suggested (top score)</span>}
+                {isSuggested && !isChosen && (
+                  <span className="tag auto"><span className="light green" /> suggested · top score</span>
+                )}
               </div>
             </div>
           )
         })}
-        <button type="button" onClick={addCandidate} className="w-full rounded-lg border border-dashed border-slate-700 py-2 text-sm text-slate-400 hover:border-cyan-500/60 hover:text-cyan-400">
+        <button type="button" onClick={addCandidate} className="btn ghost" style={{ width: '100%', borderStyle: 'dashed' }}>
           + Add candidate
         </button>
       </div>
 
-      <Field label="Justification" hint="one sentence: why this slice first">
-        <TextArea value={scope.seamJustification} onChange={(v) => update((s) => ({ ...s, seamJustification: v }))} placeholder="Why this is the right first Assignment" />
-      </Field>
+      <div className="panel">
+        <Field label="Justification" hint="one sentence: why this slice first">
+          <TextArea value={scope.seamJustification} onChange={(v) => update((s) => ({ ...s, seamJustification: v }))} placeholder="Why this is the right first Assignment" />
+        </Field>
+      </div>
     </div>
   )
 }

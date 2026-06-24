@@ -30,27 +30,31 @@ export function StageIntegration({ scope, update }: StageProps) {
 
   if (scope.processMap.systems.length === 0) {
     return (
-      <div className="space-y-5">
+      <div className="stack" data-enter>
         <StageHeader n={4} title="Integration methodology" blurb="One decision per system from Stage 1." />
-        <p className="rounded-lg border border-dashed border-slate-800 p-6 text-center text-sm text-slate-600">
-          Add systems back in Stage 1 — they show up here for the integration call.
-        </p>
+        <div className="empty">
+          <div className="big">No systems to integrate</div>
+          <p className="muted">Add systems back in Stage 1 — they show up here for the integration call.</p>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="space-y-5">
+    <div className="stack" data-enter>
       <StageHeader n={4} title="Integration methodology" blurb="Answer four questions per system; Seam recommends an approach and surfaces the notes to capture." />
 
       {rows.map((row) => {
         const rec = recommendApproach(row)
         const warnings = approachWarnings(row)
         return (
-          <div key={row.systemId} className="rounded-lg border border-slate-800 bg-slate-900/40 p-4">
-            <h3 className="mb-3 font-semibold text-slate-100">{row.systemName}</h3>
+          <div key={row.systemId} className="panel stack">
+            <div className="panel-head">
+              <h2>{row.systemName}</h2>
+              {rec && <span className="tag auto"><span className="light green" /> recommended · {INTEGRATION_APPROACHES[rec].label}</span>}
+            </div>
 
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <div className="grid cols-2">
               <Field label="API available?">
                 <YesNo value={row.apiAvailable} onChange={(v) => patch(row, { apiAvailable: v })} />
               </Field>
@@ -65,12 +69,9 @@ export function StageIntegration({ scope, update }: StageProps) {
               </Field>
             </div>
 
-            <div className="mt-4">
-              <div className="mb-2 flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-slate-400">
-                Approach
-                {rec && <span className="text-amber-400">★ recommended: {INTEGRATION_APPROACHES[rec].label}</span>}
-              </div>
-              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+            <div className="stack" style={{ gap: 'var(--space-2)' }}>
+              <span className="lbl">Approach</span>
+              <div className="grid cols-2">
                 {APPROACH_KEYS.map((a) => {
                   const meta = INTEGRATION_APPROACHES[a]
                   const active = row.approach === a
@@ -79,18 +80,25 @@ export function StageIntegration({ scope, update }: StageProps) {
                       key={a}
                       type="button"
                       onClick={() => setApproach(row, a)}
-                      className={`rounded-md border p-2 text-left transition ${active ? 'border-cyan-500 bg-cyan-500/10' : 'border-slate-800 hover:border-slate-700'}`}
+                      className="card clickable"
+                      style={{
+                        textAlign: 'left',
+                        ...(active ? { borderColor: 'var(--color-accent)', boxShadow: 'var(--focal), var(--edge-hi)' } : {}),
+                      }}
                     >
-                      <div className={`text-sm font-medium ${active ? 'text-cyan-300' : 'text-slate-200'}`}>{meta.label}</div>
-                      <div className="text-xs text-slate-500">{meta.tagline}</div>
+                      <div className="row" style={{ gap: 'var(--space-2)' }}>
+                        <span className="card-h">{meta.label}</span>
+                        {a === rec && <span className="tag auto">recommended</span>}
+                      </div>
+                      <div className="card-sub" style={{ marginTop: '0.15rem' }}>{meta.tagline}</div>
                     </button>
                   )
                 })}
               </div>
               {warnings.length > 0 && (
-                <ul className="mt-2 space-y-1">
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 'var(--space-1)' }}>
                   {warnings.map((w) => (
-                    <li key={w} className="flex items-start gap-1.5 text-xs text-amber-400">
+                    <li key={w} className="fine row" style={{ gap: '0.4rem', color: 'oklch(80% 0.13 80)', alignItems: 'flex-start' }}>
                       <span aria-hidden>⚠</span>
                       <span>{w}</span>
                     </li>
@@ -99,11 +107,9 @@ export function StageIntegration({ scope, update }: StageProps) {
               )}
             </div>
 
-            <div className="mt-3">
-              <Field label="Notes to capture">
-                <TextArea value={row.notes} onChange={(v) => patch(row, { notes: v })} placeholder="Auth, idempotency, brittleness, data checks..." rows={2} />
-              </Field>
-            </div>
+            <Field label="Notes to capture">
+              <TextArea value={row.notes} onChange={(v) => patch(row, { notes: v })} placeholder="Auth, idempotency, brittleness, data checks..." rows={2} />
+            </Field>
           </div>
         )
       })}
