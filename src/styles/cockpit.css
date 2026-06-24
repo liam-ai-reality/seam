@@ -229,12 +229,13 @@ button { font-family: inherit; }
 hr.sep { border: 0; border-top: 1px solid var(--line); margin: var(--space-5) 0; }
 
 /* ============================================================ view-enter choreography */
-/* PURE-CSS entrance — runs on mount, can never get stuck at opacity:0 (no JS .in toggle). */
-[data-enter] { animation: viewIn var(--dur-cine) var(--ease-cine) both; }
-@keyframes viewIn {
-  from { opacity: 0; transform: translateY(16px); }
-  to   { opacity: 1; transform: none; }
-}
+/* Resting state is hidden+offset; the Stepper adds .in on mount (synchronously, in a
+ * useEffect) so the end-state is a STATIC rule — content stays visible even when the
+ * tab is hidden / animations are throttled (a pure-CSS animation strands at opacity:0
+ * on a backgrounded tab). The transition is the flourish; .in is the guarantee. */
+[data-enter] { opacity: 0; transform: translateY(16px); }
+[data-enter].in { opacity: 1; transform: none;
+  transition: opacity var(--dur-cine) var(--ease-cine), transform var(--dur-cine) var(--ease-cine); }
 
 /* ============================================================ mobile topbar condense */
 @media (max-width: 760px) {
