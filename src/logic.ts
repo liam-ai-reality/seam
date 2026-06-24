@@ -116,19 +116,30 @@ export function stageStatuses(s: Scope): StageStatus[] {
       const i = s.integrations.find((x) => x.systemId === sys.id)
       return i != null && i.approach !== null
     })
-  const evalReady = t(s.evalPlan.worstOutput) && t(s.evalPlan.detection) && t(s.evalPlan.offline)
+  const evalReady =
+    t(s.evalPlan.worstOutput) &&
+    t(s.evalPlan.detection) &&
+    t(s.evalPlan.offline) &&
+    t(s.evalPlan.online) &&
+    t(s.evalPlan.costWeightedQuality) &&
+    t(s.evalPlan.baseline)
 
   return [
     { key: 'process', label: 'Map the process', complete: process, hint: 'Who, trigger, and definition of done' },
     { key: 'seam', label: 'Find the seam', complete: seam, hint: 'A scored candidate chosen, with a justification' },
     { key: 'sop', label: 'SOP & guardrails', complete: sop, hint: 'What the agent decides + stop conditions' },
     { key: 'integration', label: 'Integration', complete: integration, hint: 'An approach chosen for every system' },
-    { key: 'eval', label: 'Failure modes & eval', complete: evalReady, hint: 'Worst output, detection, and an offline plan' },
+    { key: 'eval', label: 'Failure modes & eval', complete: evalReady, hint: 'Worst output, detection, offline + online plan, cost-weighted quality, and a baseline' },
   ]
 }
 
+/** A pillar truly counts only when it's toggled done AND says how it's handled. */
+export function pillarComplete(p: Scope['pillars'][number]): boolean {
+  return p.done && p.handling.trim().length > 0
+}
+
 export function pillarsDone(s: Scope): boolean {
-  return s.pillars.length === 4 && s.pillars.every((p) => p.done)
+  return s.pillars.length === 4 && s.pillars.every(pillarComplete)
 }
 
 /** Ready to build = all five stages have content AND all four pillars done. */
@@ -141,7 +152,9 @@ export function readinessGaps(s: Scope): string[] {
     .filter((st) => !st.complete)
     .map((st) => st.label)
   if (!pillarsDone(s)) {
-    const open = s.pillars.filter((p) => !p.done).map((p) => p.title)
+    const open = s.pillars
+      .filter((p) => !pillarComplete(p))
+      .map((p) => (p.done ? `${p.title} (no handling)` : p.title))
     gaps.push(`Pillars: ${open.join(', ')}`)
   }
   return gaps
