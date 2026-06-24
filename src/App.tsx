@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { Component, Suspense, lazy, useEffect, useState, type ReactNode } from 'react'
 import { newScope, type StageKey } from './constants'
 import { loadScopes, saveScopes, type SaveResult } from './storage'
 import { sampleScope } from './sample'
@@ -11,6 +11,27 @@ type SaveError = Extract<SaveResult, { ok: false }>
 type Theme = 'dark' | 'light'
 
 const THEME_KEY = 'seam.theme'
+
+// The assist surface is OPTIONAL and isolated behind a dynamic import. v1 never
+// statically depends on src/assist/; if that directory is deleted the import
+// rejects and the boundary below renders nothing — v1 keeps working (#14).
+type CapturePanelModule = typeof import('./assist/components/CapturePanel')
+const CapturePanel = lazy<CapturePanelModule['default']>(() =>
+  import('./assist/components/CapturePanel').catch(
+    () => ({ default: () => null }) as unknown as CapturePanelModule,
+  ),
+)
+
+/** Swallows any error from the optional assist subtree so v1 is never affected. */
+class AssistBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
+  state = { failed: false }
+  static getDerivedStateFromError() {
+    return { failed: true }
+  }
+  render() {
+    return this.state.failed ? null : this.props.children
+  }
+}
 
 function readTheme(): Theme {
   try {
@@ -96,15 +117,24 @@ export function App() {
 
   function ScopeListView() {
     return (
-      <ScopeList
-        scopes={scopes}
-        onOpen={(id) => setView({ kind: 'scope', id, stage: 'process' })}
-        onCreate={(name) => addScope(newScope(name))}
-        onRename={(id, name) => setScopes((prev) => prev.map((s) => (s.id === id ? { ...s, name } : s)))}
-        onDelete={(id) => setScopes((prev) => prev.filter((s) => s.id !== id))}
-        onLoadSample={() => addScope(sampleScope())}
-        onImport={addScope}
-      />
+      <>
+        <ScopeList
+          scopes={scopes}
+          onOpen={(id) => setView({ kind: 'scope', id, stage: 'process' })}
+          onCreate={(name) => addScope(newScope(name))}
+          onRename={(id, name) => setScopes((prev) => prev.map((s) => (s.id === id ? { ...s, name } : s)))}
+          onDelete={(id) => setScopes((prev) => prev.filter((s) => s.id !== id))}
+          onLoadSample={() => addScope(sampleScope())}
+          onImport={addScope}
+        />
+        <div className="wrap" style={{ marginTop: 'var(--space-6)' }}>
+          <AssistBoundary>
+            <Suspense fallback={null}>
+              <CapturePanel />
+            </Suspense>
+          </AssistBoundary>
+        </div>
+      </>
     )
   }
 }
