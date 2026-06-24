@@ -1,5 +1,5 @@
 import { INTEGRATION_APPROACHES } from '../constants'
-import { approachNotes, recommendApproach, reconcileIntegrations } from '../logic'
+import { approachNotes, approachWarnings, recommendApproach, reconcileIntegrations } from '../logic'
 import type { Integration, IntegrationApproach } from '../types'
 import type { StageProps } from './stage'
 import { Field, StageHeader, TextArea, TextInput, YesNo } from './fields'
@@ -45,6 +45,7 @@ export function StageIntegration({ scope, update }: StageProps) {
 
       {rows.map((row) => {
         const rec = recommendApproach(row)
+        const warnings = approachWarnings(row)
         return (
           <div key={row.systemId} className="rounded-lg border border-slate-800 bg-slate-900/40 p-4">
             <h3 className="mb-3 font-semibold text-slate-100">{row.systemName}</h3>
@@ -86,6 +87,16 @@ export function StageIntegration({ scope, update }: StageProps) {
                   )
                 })}
               </div>
+              {warnings.length > 0 && (
+                <ul className="mt-2 space-y-1">
+                  {warnings.map((w) => (
+                    <li key={w} className="flex items-start gap-1.5 text-xs text-amber-400">
+                      <span aria-hidden>⚠</span>
+                      <span>{w}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
 
             <div className="mt-3">

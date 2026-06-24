@@ -67,6 +67,27 @@ describe('generateBrief — Markdown table safety', () => {
   })
 })
 
+describe('generateBrief — section 4 captures auth type', () => {
+  it('prints the captured authType on the system line when set', () => {
+    const s = sampleScope()
+    const salesforce = s.integrations.find((i) => i.systemName === 'Salesforce')!
+    expect(salesforce.authType.trim().length).toBeGreaterThan(0)
+    const brief = generateBrief(s)
+    const line = brief
+      .split('\n')
+      .find((l) => l.includes(`**${salesforce.systemName}**`))
+    expect(line).toBeDefined()
+    expect(line).toContain(`(auth: ${salesforce.authType})`)
+  })
+
+  it('omits the auth annotation when authType is empty', () => {
+    const s = sampleScope()
+    s.integrations = s.integrations.map((i) => ({ ...i, authType: '' }))
+    const brief = generateBrief(s)
+    expect(brief).not.toContain('(auth:')
+  })
+})
+
 describe('sample integration label matches its note', () => {
   it('the shared claims inbox label agrees with its files/email note', () => {
     const s = sampleScope()

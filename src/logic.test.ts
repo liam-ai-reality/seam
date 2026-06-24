@@ -2,15 +2,17 @@ import { describe, expect, it } from 'vitest'
 import { newScope } from './constants'
 import { sampleScope } from './sample'
 import {
+  approachWarnings,
   isReady,
   rankSeams,
   readinessGaps,
   recommendApproach,
   recommendGrader,
   seamScore,
+  stageStatuses,
   suggestedSeamId,
 } from './logic'
-import type { SeamCandidate, SeamWeights } from './types'
+import type { Integration, SeamCandidate, SeamWeights } from './types'
 
 const equal: SeamWeights = { volume: 1, ruleBound: 1, lowJudgement: 1, lowBlastRadius: 1 }
 const cand = (id: string, v: number): SeamCandidate => ({ id, name: id, volume: v, ruleBound: v, lowJudgement: v, lowBlastRadius: v })
@@ -47,6 +49,49 @@ describe('integration recommendation', () => {
     expect(recommendApproach({ apiAvailable: false, onPrem: true })).toBe('on-prem')
     expect(recommendApproach({ apiAvailable: false, onPrem: false })).toBe('screen')
     expect(recommendApproach({ apiAvailable: null, onPrem: null })).toBe(null)
+  })
+})
+
+describe('approach warnings — uiStable is load-bearing', () => {
+  const screenInt = (uiStable: boolean | null): Integration => ({
+    id: 'i1',
+    systemId: 's1',
+    systemName: 'Legacy portal',
+    apiAvailable: false,
+    authType: '',
+    onPrem: false,
+    uiStable,
+    approach: 'screen',
+    notes: '',
+  })
+
+  it('a stable-UI screen approach gets a baseline brittleness caveat', () => {
+    const warnings = approachWarnings(screenInt(true))
+    expect(warnings).toHaveLength(1)
+    expect(warnings[0]!.toLowerCase()).toContain('brittle')
+  })
+
+  it('an unstable UI earns a STRONGER warning than a stable/unknown one', () => {
+    const unstable = approachWarnings(screenInt(false))
+    const stable = approachWarnings(screenInt(true))
+    const unknown = approachWarnings(screenInt(null))
+    // The unstable case says something the stable/unknown case does not.
+    expect(unstable[0]).not.toBe(stable[0])
+    expect(unstable[0]).not.toBe(unknown[0])
+    expect(unstable[0]!.toLowerCase()).toContain('unstable')
+    expect(stable[0]).toBe(unknown[0])
+  })
+
+  it('non-screen approaches emit no brittleness warning', () => {
+    expect(approachWarnings({ ...screenInt(false), approach: 'api' })).toEqual([])
+  })
+})
+
+describe('stage statuses carry hints', () => {
+  it('every stage status has a non-empty hint', () => {
+    for (const st of stageStatuses(sampleScope())) {
+      expect(st.hint.trim().length).toBeGreaterThan(0)
+    }
   })
 })
 
