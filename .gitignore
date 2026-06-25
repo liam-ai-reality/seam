@@ -5,3 +5,5 @@ dist
 .vite
 *.tsbuildinfo
 .ref/
+.claude/worktrees/
+.serena/
