@@ -1,10 +1,25 @@
-import { useMemo, useState } from 'react'
+import { Suspense, lazy, useMemo, useState } from 'react'
 import { generateBrief } from '../brief'
 import type { StageKey } from '../constants'
 import { isReady, pillarsDone, stageStatuses } from '../logic'
 import { exportScope } from '../storage'
 import type { StageReadyProps } from './stage'
+import { AssistBoundary } from './AssistBoundary'
 import { StageHeader, TextArea, Toggle } from './fields'
+
+// The Scope Critic is an OPTIONAL assist surface, OFF by default
+// (assistAvailable() is false) and code-split into its own lazy chunk. StageReady
+// reaches it only through this guarded dynamic import behind an AssistBoundary,
+// which falls back to a null component if the chunk fails to load. The critic is
+// ADVISORY only — it never changes isReady() or edits the Scope — and it makes
+// zero network calls offline. v1's readiness gate + brief below stay fully
+// functional and offline-safe without it.
+type CriticPanelModule = typeof import('../assist/components/CriticPanel')
+const CriticPanel = lazy<CriticPanelModule['default']>(() =>
+  import('../assist/components/CriticPanel').catch(
+    () => ({ default: () => null }) as unknown as CriticPanelModule,
+  ),
+)
 
 export function StageReady({ scope, update, setStage }: StageReadyProps) {
   const statuses = stageStatuses(scope)
@@ -98,6 +113,14 @@ export function StageReady({ scope, update, setStage }: StageReadyProps) {
           </li>
         </ul>
       </div>
+
+      {/* Critic findings — NON-BLOCKING, advisory, beside the readiness gate.
+          Never changes readiness; only navigates (setStage) and dismisses. */}
+      <AssistBoundary>
+        <Suspense fallback={null}>
+          <CriticPanel scope={scope} setStage={setStage} />
+        </Suspense>
+      </AssistBoundary>
 
       {/* Brief output */}
       <div className="panel">
