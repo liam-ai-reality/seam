@@ -5,7 +5,7 @@
 //
 // This is the ONLY file in the module that touches the network.
 
-import { assistAvailable } from '../gate'
+import { assistAvailable } from '../gate.ts'
 import type { AssistRequest, AssistResponse, AssistTransport } from '../types'
 
 const ENDPOINT = 'https://api.anthropic.com/v1/messages'

@@ -1,0 +1,3414 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "id": "invoice-recon-clean",
+      "kind": "transcript",
+      "source": "The finance pod reviews supplier invoices each morning in the ledger app. A new invoice landing in the inbox starts the task. Done means the invoice is matched to a purchase order. It runs roughly ninety times a day. A wrong match means the company overpays a vendor.",
+      "expected": {
+        "processMap": {
+          "who": "The finance pod",
+          "systems": [
+            "the ledger app"
+          ],
+          "trigger": "A new invoice landing in the inbox",
+          "doneDefinition": "the invoice is matched to a purchase order",
+          "frequency": "ninety times a day",
+          "costOfError": "the company overpays a vendor"
+        },
+        "candidates": [
+          {
+            "name": "Match invoices to purchase orders",
+            "volume": 5,
+            "ruleBound": 4,
+            "lowJudgement": 4,
+            "lowBlastRadius": 2
+          }
+        ],
+        "failureModes": [
+          {
+            "field": "worstOutput",
+            "value": "Pay a vendor against the wrong purchase order"
+          },
+          {
+            "field": "detection",
+            "value": "Compare totals to the matched PO before release"
+          }
+        ]
+      },
+      "modelOutput": {
+        "processMap": {
+          "who": {
+            "value": "The finance pod",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "The finance pod",
+                "charStart": 0,
+                "charEnd": 15
+              }
+            ],
+            "status": "draft"
+          },
+          "systems": [
+            {
+              "value": "the ledger app",
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "the ledger app",
+                  "charStart": 58,
+                  "charEnd": 72
+                }
+              ],
+              "status": "draft"
+            }
+          ],
+          "trigger": {
+            "value": "A new invoice landing in the inbox",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "A new invoice landing in the inbox",
+                "charStart": 74,
+                "charEnd": 108
+              }
+            ],
+            "status": "draft"
+          },
+          "doneDefinition": {
+            "value": "the invoice is matched to a purchase order",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "the invoice is matched to a purchase order",
+                "charStart": 137,
+                "charEnd": 179
+              }
+            ],
+            "status": "draft"
+          },
+          "frequency": {
+            "value": "ninety times a day",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "ninety times a day",
+                "charStart": 197,
+                "charEnd": 215
+              }
+            ],
+            "status": "draft"
+          },
+          "costOfError": {
+            "value": "the company overpays a vendor",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "the company overpays a vendor",
+                "charStart": 237,
+                "charEnd": 266
+              }
+            ],
+            "status": "draft"
+          }
+        },
+        "candidates": [
+          {
+            "key": "match invoices to purchase orders",
+            "name": {
+              "value": "Match invoices to purchase orders",
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "matched to a purchase order",
+                  "charStart": 152,
+                  "charEnd": 179
+                }
+              ],
+              "status": "draft"
+            },
+            "volume": {
+              "value": 5,
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "ninety times a day",
+                  "charStart": 197,
+                  "charEnd": 215
+                }
+              ],
+              "status": "draft"
+            },
+            "ruleBound": {
+              "value": 4,
+              "confidence": "medium",
+              "sourceSpans": [
+                {
+                  "quote": "matched to a purchase order",
+                  "charStart": 152,
+                  "charEnd": 179
+                }
+              ],
+              "status": "draft"
+            },
+            "lowJudgement": {
+              "value": 4,
+              "confidence": "medium",
+              "sourceSpans": [
+                {
+                  "quote": "matched to a purchase order",
+                  "charStart": 152,
+                  "charEnd": 179
+                }
+              ],
+              "status": "draft"
+            },
+            "lowBlastRadius": {
+              "value": 2,
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "overpays a vendor",
+                  "charStart": 249,
+                  "charEnd": 266
+                }
+              ],
+              "status": "draft"
+            }
+          }
+        ],
+        "failureModes": [
+          {
+            "field": "worstOutput",
+            "value": {
+              "value": "Pay a vendor against the wrong purchase order",
+              "confidence": "medium",
+              "sourceSpans": [
+                {
+                  "quote": "overpays a vendor",
+                  "charStart": 249,
+                  "charEnd": 266
+                }
+              ],
+              "status": "draft"
+            }
+          },
+          {
+            "field": "detection",
+            "value": {
+              "value": "Compare totals to the matched PO before release",
+              "confidence": "low",
+              "sourceSpans": [
+                {
+                  "quote": "matched to a purchase order",
+                  "charStart": 152,
+                  "charEnd": 179
+                }
+              ],
+              "status": "draft"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "onboarding-sop",
+      "kind": "sop",
+      "source": "New-hire onboarding is handled by the people ops coordinator using the HR portal and the email system. It begins when a signed offer is filed. Done means the new hire has accounts in every system and a welcome packet. About forty starts happen each month. A missed account means the hire cannot work on day one. Two repeatable pieces stand out: creating the standard accounts, and sending the templated welcome email.",
+      "expected": {
+        "processMap": {
+          "who": "the people ops coordinator",
+          "systems": [
+            "the HR portal",
+            "the email system"
+          ],
+          "trigger": "a signed offer is filed",
+          "doneDefinition": "the new hire has accounts in every system and a welcome packet",
+          "frequency": "forty starts happen each month",
+          "costOfError": "the hire cannot work on day one"
+        },
+        "candidates": [
+          {
+            "name": "Create the standard accounts",
+            "volume": 4,
+            "ruleBound": 5,
+            "lowJudgement": 5,
+            "lowBlastRadius": 3
+          },
+          {
+            "name": "Send the templated welcome email",
+            "volume": 4,
+            "ruleBound": 5,
+            "lowJudgement": 4,
+            "lowBlastRadius": 5
+          }
+        ],
+        "failureModes": [
+          {
+            "field": "worstOutput",
+            "value": "A hire missing a critical system account on day one"
+          },
+          {
+            "field": "detection",
+            "value": "Reconcile created accounts against the standard list"
+          }
+        ]
+      },
+      "modelOutput": {
+        "processMap": {
+          "who": {
+            "value": "the people ops coordinator",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "the people ops coordinator",
+                "charStart": 34,
+                "charEnd": 60
+              }
+            ],
+            "status": "draft"
+          },
+          "systems": [
+            {
+              "value": "the HR portal",
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "the HR portal",
+                  "charStart": 67,
+                  "charEnd": 80
+                }
+              ],
+              "status": "draft"
+            },
+            {
+              "value": "the email system",
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "the email system",
+                  "charStart": 85,
+                  "charEnd": 101
+                }
+              ],
+              "status": "draft"
+            }
+          ],
+          "trigger": {
+            "value": "a signed offer is filed",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "a signed offer is filed",
+                "charStart": 118,
+                "charEnd": 141
+              }
+            ],
+            "status": "draft"
+          },
+          "doneDefinition": {
+            "value": "the new hire has accounts in every system and a welcome packet",
+            "confidence": "medium",
+            "sourceSpans": [
+              {
+                "quote": "the new hire has accounts in every system and a welcome packet",
+                "charStart": 154,
+                "charEnd": 216
+              }
+            ],
+            "status": "draft"
+          },
+          "frequency": {
+            "value": "forty starts happen each month",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "forty starts happen each month",
+                "charStart": 224,
+                "charEnd": 254
+              }
+            ],
+            "status": "draft"
+          },
+          "costOfError": {
+            "value": "the hire cannot work on day one",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "the hire cannot work on day one",
+                "charStart": 279,
+                "charEnd": 310
+              }
+            ],
+            "status": "draft"
+          }
+        },
+        "candidates": [
+          {
+            "key": "create the standard accounts",
+            "name": {
+              "value": "Create the standard accounts",
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "creating the standard accounts",
+                  "charStart": 345,
+                  "charEnd": 375
+                }
+              ],
+              "status": "draft"
+            },
+            "volume": {
+              "value": 4,
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "forty starts happen each month",
+                  "charStart": 224,
+                  "charEnd": 254
+                }
+              ],
+              "status": "draft"
+            },
+            "ruleBound": {
+              "value": 5,
+              "confidence": "medium",
+              "sourceSpans": [
+                {
+                  "quote": "creating the standard accounts",
+                  "charStart": 345,
+                  "charEnd": 375
+                }
+              ],
+              "status": "draft"
+            },
+            "lowJudgement": {
+              "value": 5,
+              "confidence": "medium",
+              "sourceSpans": [
+                {
+                  "quote": "creating the standard accounts",
+                  "charStart": 345,
+                  "charEnd": 375
+                }
+              ],
+              "status": "draft"
+            },
+            "lowBlastRadius": {
+              "value": 3,
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "cannot work on day one",
+                  "charStart": 288,
+                  "charEnd": 310
+                }
+              ],
+              "status": "draft"
+            }
+          },
+          {
+            "key": "send the templated welcome email",
+            "name": {
+              "value": "Send the templated welcome email",
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "sending the templated welcome email",
+                  "charStart": 381,
+                  "charEnd": 416
+                }
+              ],
+              "status": "draft"
+            },
+            "volume": {
+              "value": 4,
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "forty starts happen each month",
+                  "charStart": 224,
+                  "charEnd": 254
+                }
+              ],
+              "status": "draft"
+            },
+            "ruleBound": {
+              "value": 5,
+              "confidence": "medium",
+              "sourceSpans": [
+                {
+                  "quote": "sending the templated welcome email",
+                  "charStart": 381,
+                  "charEnd": 416
+                }
+              ],
+              "status": "draft"
+            },
+            "lowJudgement": {
+              "value": 4,
+              "confidence": "medium",
+              "sourceSpans": [
+                {
+                  "quote": "templated welcome email",
+                  "charStart": 393,
+                  "charEnd": 416
+                }
+              ],
+              "status": "draft"
+            },
+            "lowBlastRadius": {
+              "value": 5,
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "welcome packet",
+                  "charStart": 202,
+                  "charEnd": 216
+                }
+              ],
+              "status": "draft"
+            }
+          }
+        ],
+        "failureModes": [
+          {
+            "field": "worstOutput",
+            "value": {
+              "value": "A hire missing a critical system account on day one",
+              "confidence": "medium",
+              "sourceSpans": [
+                {
+                  "quote": "cannot work on day one",
+                  "charStart": 288,
+                  "charEnd": 310
+                }
+              ],
+              "status": "draft"
+            }
+          },
+          {
+            "field": "detection",
+            "value": {
+              "value": "Reconcile created accounts against the standard list",
+              "confidence": "low",
+              "sourceSpans": [
+                {
+                  "quote": "accounts in every system",
+                  "charStart": 171,
+                  "charEnd": 195
+                }
+              ],
+              "status": "draft"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "support-triage-email",
+      "kind": "email",
+      "source": "Customer support emails are triaged by the duty agent in the helpdesk queue. An incoming ticket triggers it. Done means the ticket is tagged and routed to the right team. There are about two hundred tickets a day. A misroute means a slow first response. Routine parts include tagging the ticket category and drafting the first acknowledgement.",
+      "expected": {
+        "processMap": {
+          "who": "the duty agent",
+          "systems": [
+            "the helpdesk queue"
+          ],
+          "trigger": "An incoming ticket",
+          "doneDefinition": "the ticket is tagged and routed to the right team",
+          "frequency": "two hundred tickets a day",
+          "costOfError": "a slow first response"
+        },
+        "candidates": [
+          {
+            "name": "Tag the ticket category",
+            "volume": 5,
+            "ruleBound": 4,
+            "lowJudgement": 3,
+            "lowBlastRadius": 4
+          },
+          {
+            "name": "Draft the first acknowledgement",
+            "volume": 5,
+            "ruleBound": 3,
+            "lowJudgement": 2,
+            "lowBlastRadius": 4
+          }
+        ],
+        "failureModes": [
+          {
+            "field": "worstOutput",
+            "value": "Route a ticket to the wrong team and delay the reply"
+          },
+          {
+            "field": "detection",
+            "value": "Sample routed tickets against the routing rules"
+          }
+        ]
+      },
+      "modelOutput": {
+        "processMap": {
+          "who": {
+            "value": "the duty agent",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "the duty agent",
+                "charStart": 39,
+                "charEnd": 53
+              }
+            ],
+            "status": "draft"
+          },
+          "systems": [
+            {
+              "value": "the helpdesk queue",
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "the helpdesk queue",
+                  "charStart": 57,
+                  "charEnd": 75
+                }
+              ],
+              "status": "draft"
+            }
+          ],
+          "trigger": {
+            "value": "An incoming ticket",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "An incoming ticket",
+                "charStart": 77,
+                "charEnd": 95
+              }
+            ],
+            "status": "draft"
+          },
+          "doneDefinition": {
+            "value": "the ticket is tagged and routed to the right team",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "the ticket is tagged and routed to the right team",
+                "charStart": 120,
+                "charEnd": 169
+              }
+            ],
+            "status": "draft"
+          },
+          "frequency": {
+            "value": "two hundred tickets a day",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "two hundred tickets a day",
+                "charStart": 187,
+                "charEnd": 212
+              }
+            ],
+            "status": "draft"
+          },
+          "costOfError": {
+            "value": "a slow first response",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "a slow first response",
+                "charStart": 231,
+                "charEnd": 252
+              }
+            ],
+            "status": "draft"
+          }
+        },
+        "candidates": [
+          {
+            "key": "tag the ticket category",
+            "name": {
+              "value": "Tag the ticket category",
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "tagging the ticket category",
+                  "charStart": 276,
+                  "charEnd": 303
+                }
+              ],
+              "status": "draft"
+            },
+            "volume": {
+              "value": 5,
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "two hundred tickets a day",
+                  "charStart": 187,
+                  "charEnd": 212
+                }
+              ],
+              "status": "draft"
+            },
+            "ruleBound": {
+              "value": 4,
+              "confidence": "medium",
+              "sourceSpans": [
+                {
+                  "quote": "tagging the ticket category",
+                  "charStart": 276,
+                  "charEnd": 303
+                }
+              ],
+              "status": "draft"
+            },
+            "lowJudgement": {
+              "value": 3,
+              "confidence": "medium",
+              "sourceSpans": [
+                {
+                  "quote": "tagging the ticket category",
+                  "charStart": 276,
+                  "charEnd": 303
+                }
+              ],
+              "status": "draft"
+            },
+            "lowBlastRadius": {
+              "value": 4,
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "slow first response",
+                  "charStart": 233,
+                  "charEnd": 252
+                }
+              ],
+              "status": "draft"
+            }
+          }
+        ],
+        "failureModes": [
+          {
+            "field": "worstOutput",
+            "value": {
+              "value": "Route a ticket to the wrong team and delay the reply",
+              "confidence": "medium",
+              "sourceSpans": [
+                {
+                  "quote": "slow first response",
+                  "charStart": 233,
+                  "charEnd": 252
+                }
+              ],
+              "status": "draft"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "refund-approval-clean",
+      "kind": "transcript",
+      "source": "Refund requests are reviewed by the billing specialist inside the payments console. A submitted refund form starts the review. Done means the refund is approved or rejected with a reason. Around sixty refunds come in weekly. A wrong approval means money leaves that should not.",
+      "expected": {
+        "processMap": {
+          "who": "the billing specialist",
+          "systems": [
+            "the payments console"
+          ],
+          "trigger": "A submitted refund form",
+          "doneDefinition": "the refund is approved or rejected with a reason",
+          "frequency": "sixty refunds come in weekly",
+          "costOfError": "money leaves that should not"
+        },
+        "candidates": [
+          {
+            "name": "Check refunds against the policy rules",
+            "volume": 3,
+            "ruleBound": 5,
+            "lowJudgement": 3,
+            "lowBlastRadius": 2
+          }
+        ],
+        "failureModes": [
+          {
+            "field": "worstOutput",
+            "value": "Approve a refund that violates policy"
+          },
+          {
+            "field": "detection",
+            "value": "Audit a sample of approvals against policy"
+          }
+        ]
+      },
+      "modelOutput": {
+        "processMap": {
+          "who": {
+            "value": "the billing specialist",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "the billing specialist",
+                "charStart": 32,
+                "charEnd": 54
+              }
+            ],
+            "status": "draft"
+          },
+          "systems": [
+            {
+              "value": "the payments console",
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "the payments console",
+                  "charStart": 62,
+                  "charEnd": 82
+                }
+              ],
+              "status": "draft"
+            }
+          ],
+          "trigger": {
+            "value": "A submitted refund form",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "A submitted refund form",
+                "charStart": 84,
+                "charEnd": 107
+              }
+            ],
+            "status": "draft"
+          },
+          "doneDefinition": {
+            "value": "the refund is approved or rejected with a reason",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "the refund is approved or rejected with a reason",
+                "charStart": 138,
+                "charEnd": 186
+              }
+            ],
+            "status": "draft"
+          },
+          "frequency": {
+            "value": "sixty refunds come in weekly",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "sixty refunds come in weekly",
+                "charStart": 195,
+                "charEnd": 223
+              }
+            ],
+            "status": "draft"
+          },
+          "costOfError": {
+            "value": "money leaves that should not",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "money leaves that should not",
+                "charStart": 248,
+                "charEnd": 276
+              }
+            ],
+            "status": "draft"
+          }
+        },
+        "candidates": [
+          {
+            "key": "check refunds against the policy rules",
+            "name": {
+              "value": "Check refunds against the policy rules",
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "approved or rejected with a reason",
+                  "charStart": 152,
+                  "charEnd": 186
+                }
+              ],
+              "status": "draft"
+            },
+            "volume": {
+              "value": 3,
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "sixty refunds come in weekly",
+                  "charStart": 195,
+                  "charEnd": 223
+                }
+              ],
+              "status": "draft"
+            },
+            "ruleBound": {
+              "value": 5,
+              "confidence": "medium",
+              "sourceSpans": [
+                {
+                  "quote": "approved or rejected with a reason",
+                  "charStart": 152,
+                  "charEnd": 186
+                }
+              ],
+              "status": "draft"
+            },
+            "lowJudgement": {
+              "value": 3,
+              "confidence": "medium",
+              "sourceSpans": [
+                {
+                  "quote": "approved or rejected with a reason",
+                  "charStart": 152,
+                  "charEnd": 186
+                }
+              ],
+              "status": "draft"
+            },
+            "lowBlastRadius": {
+              "value": 2,
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "money leaves that should not",
+                  "charStart": 248,
+                  "charEnd": 276
+                }
+              ],
+              "status": "draft"
+            }
+          }
+        ],
+        "failureModes": [
+          {
+            "field": "worstOutput",
+            "value": {
+              "value": "Approve a refund that violates policy",
+              "confidence": "medium",
+              "sourceSpans": [
+                {
+                  "quote": "money leaves that should not",
+                  "charStart": 248,
+                  "charEnd": 276
+                }
+              ],
+              "status": "draft"
+            }
+          },
+          {
+            "field": "detection",
+            "value": {
+              "value": "Audit a sample of approvals against policy",
+              "confidence": "low",
+              "sourceSpans": [],
+              "status": "draft"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "expense-report-review",
+      "kind": "transcript",
+      "source": "Expense reports are checked by the travel desk in the expense tool. A submitted report kicks it off. Done means every line has a valid receipt. It happens about thirty times a day. A missed receipt means a failed audit later.",
+      "expected": {
+        "processMap": {
+          "who": "the travel desk",
+          "systems": [
+            "the expense tool"
+          ],
+          "trigger": "A submitted report",
+          "doneDefinition": "every line has a valid receipt",
+          "frequency": "thirty times a day",
+          "costOfError": "a failed audit later"
+        },
+        "candidates": [
+          {
+            "name": "Validate receipts against report lines",
+            "volume": 4,
+            "ruleBound": 5,
+            "lowJudgement": 4,
+            "lowBlastRadius": 3
+          }
+        ],
+        "failureModes": [
+          {
+            "field": "worstOutput",
+            "value": "Pass a report with a missing receipt"
+          }
+        ]
+      },
+      "modelOutput": {
+        "processMap": {
+          "who": {
+            "value": "the travel desk",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "the travel desk",
+                "charStart": 31,
+                "charEnd": 46
+              }
+            ],
+            "status": "draft"
+          },
+          "systems": [
+            {
+              "value": "the expense tool",
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "the expense tool",
+                  "charStart": 50,
+                  "charEnd": 66
+                }
+              ],
+              "status": "draft"
+            }
+          ],
+          "trigger": {
+            "value": "A submitted report",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "A submitted report",
+                "charStart": 68,
+                "charEnd": 86
+              }
+            ],
+            "status": "draft"
+          },
+          "doneDefinition": {
+            "value": "every line has a valid receipt",
+            "confidence": "medium",
+            "sourceSpans": [
+              {
+                "quote": "every line has a valid receipt",
+                "charStart": 112,
+                "charEnd": 142
+              }
+            ],
+            "status": "draft"
+          },
+          "frequency": {
+            "value": "thirty times a day",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "thirty times a day",
+                "charStart": 161,
+                "charEnd": 179
+              }
+            ],
+            "status": "draft"
+          },
+          "costOfError": {
+            "value": "a failed audit later",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "a failed audit later",
+                "charStart": 204,
+                "charEnd": 224
+              }
+            ],
+            "status": "draft"
+          }
+        },
+        "candidates": [
+          {
+            "key": "validate receipts against report lines",
+            "name": {
+              "value": "Validate receipts against report lines",
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "checked by the travel desk",
+                  "charStart": 20,
+                  "charEnd": 46
+                }
+              ],
+              "status": "draft"
+            },
+            "volume": {
+              "value": 4,
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "thirty times a day",
+                  "charStart": 161,
+                  "charEnd": 179
+                }
+              ],
+              "status": "draft"
+            },
+            "ruleBound": {
+              "value": 5,
+              "confidence": "medium",
+              "sourceSpans": [
+                {
+                  "quote": "valid receipt",
+                  "charStart": 129,
+                  "charEnd": 142
+                }
+              ],
+              "status": "draft"
+            },
+            "lowJudgement": {
+              "value": 4,
+              "confidence": "medium",
+              "sourceSpans": [
+                {
+                  "quote": "valid receipt",
+                  "charStart": 129,
+                  "charEnd": 142
+                }
+              ],
+              "status": "draft"
+            },
+            "lowBlastRadius": {
+              "value": 3,
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "failed audit later",
+                  "charStart": 206,
+                  "charEnd": 224
+                }
+              ],
+              "status": "draft"
+            }
+          }
+        ],
+        "failureModes": [
+          {
+            "field": "worstOutput",
+            "value": {
+              "value": "Pass a report with a missing receipt",
+              "confidence": "medium",
+              "sourceSpans": [
+                {
+                  "quote": "missed receipt",
+                  "charStart": 183,
+                  "charEnd": 197
+                }
+              ],
+              "status": "draft"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "lead-routing-crm",
+      "kind": "transcript",
+      "source": "Inbound leads are routed by the sales ops lead in the CRM. A new lead form submission starts it. Done means the lead is assigned to the right rep. Roughly one hundred leads arrive daily. A wrong assignment means a lost deal.",
+      "expected": {
+        "processMap": {
+          "who": "the sales ops lead",
+          "systems": [
+            "the CRM"
+          ],
+          "trigger": "A new lead form submission",
+          "doneDefinition": "the lead is assigned to the right rep",
+          "frequency": "one hundred leads arrive daily",
+          "costOfError": "a lost deal"
+        },
+        "candidates": [
+          {
+            "name": "Assign leads to reps by territory",
+            "volume": 5,
+            "ruleBound": 4,
+            "lowJudgement": 3,
+            "lowBlastRadius": 3
+          }
+        ],
+        "failureModes": [
+          {
+            "field": "worstOutput",
+            "value": "Assign a lead to the wrong territory rep"
+          }
+        ]
+      },
+      "modelOutput": {
+        "processMap": {
+          "who": {
+            "value": "the sales ops lead",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "the sales ops lead",
+                "charStart": 28,
+                "charEnd": 46
+              }
+            ],
+            "status": "draft"
+          },
+          "systems": [
+            {
+              "value": "the CRM",
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "the CRM",
+                  "charStart": 50,
+                  "charEnd": 57
+                }
+              ],
+              "status": "draft"
+            }
+          ],
+          "trigger": {
+            "value": "A new lead form submission",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "A new lead form submission",
+                "charStart": 59,
+                "charEnd": 85
+              }
+            ],
+            "status": "draft"
+          },
+          "doneDefinition": {
+            "value": "the lead is assigned to the right rep",
+            "confidence": "medium",
+            "sourceSpans": [
+              {
+                "quote": "the lead is assigned to the right rep",
+                "charStart": 108,
+                "charEnd": 145
+              }
+            ],
+            "status": "draft"
+          },
+          "frequency": {
+            "value": "one hundred leads arrive daily",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "one hundred leads arrive daily",
+                "charStart": 155,
+                "charEnd": 185
+              }
+            ],
+            "status": "draft"
+          },
+          "costOfError": {
+            "value": "a lost deal",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "a lost deal",
+                "charStart": 212,
+                "charEnd": 223
+              }
+            ],
+            "status": "draft"
+          }
+        },
+        "candidates": [
+          {
+            "key": "assign leads to reps by territory",
+            "name": {
+              "value": "Assign leads to reps by territory",
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "routed by the sales ops lead",
+                  "charStart": 18,
+                  "charEnd": 46
+                }
+              ],
+              "status": "draft"
+            },
+            "volume": {
+              "value": 5,
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "one hundred leads arrive daily",
+                  "charStart": 155,
+                  "charEnd": 185
+                }
+              ],
+              "status": "draft"
+            },
+            "ruleBound": {
+              "value": 4,
+              "confidence": "medium",
+              "sourceSpans": [
+                {
+                  "quote": "assigned to the right rep",
+                  "charStart": 120,
+                  "charEnd": 145
+                }
+              ],
+              "status": "draft"
+            },
+            "lowJudgement": {
+              "value": 3,
+              "confidence": "medium",
+              "sourceSpans": [
+                {
+                  "quote": "assigned to the right rep",
+                  "charStart": 120,
+                  "charEnd": 145
+                }
+              ],
+              "status": "draft"
+            },
+            "lowBlastRadius": {
+              "value": 3,
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "a lost deal",
+                  "charStart": 212,
+                  "charEnd": 223
+                }
+              ],
+              "status": "draft"
+            }
+          }
+        ],
+        "failureModes": [
+          {
+            "field": "worstOutput",
+            "value": {
+              "value": "Assign a lead to the wrong territory rep",
+              "confidence": "medium",
+              "sourceSpans": [
+                {
+                  "quote": "wrong assignment",
+                  "charStart": 189,
+                  "charEnd": 205
+                }
+              ],
+              "status": "draft"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "contract-renewal-sop",
+      "kind": "sop",
+      "source": "Contract renewals are managed by the account manager in the contracts system. A renewal date approaching triggers it. Done means a renewal notice is sent and logged. About twenty renewals occur each month. A missed notice means an auto-lapse of coverage.",
+      "expected": {
+        "processMap": {
+          "who": "the account manager",
+          "systems": [
+            "the contracts system"
+          ],
+          "trigger": "A renewal date approaching",
+          "doneDefinition": "a renewal notice is sent and logged",
+          "frequency": "twenty renewals occur each month",
+          "costOfError": "an auto-lapse of coverage"
+        },
+        "candidates": [
+          {
+            "name": "Send the renewal notice",
+            "volume": 3,
+            "ruleBound": 5,
+            "lowJudgement": 4,
+            "lowBlastRadius": 4
+          }
+        ],
+        "failureModes": [
+          {
+            "field": "worstOutput",
+            "value": "Let a contract lapse without notice"
+          }
+        ]
+      },
+      "modelOutput": {
+        "processMap": {
+          "who": {
+            "value": "the account manager",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "the account manager",
+                "charStart": 33,
+                "charEnd": 52
+              }
+            ],
+            "status": "draft"
+          },
+          "systems": [
+            {
+              "value": "the contracts system",
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "the contracts system",
+                  "charStart": 56,
+                  "charEnd": 76
+                }
+              ],
+              "status": "draft"
+            }
+          ],
+          "trigger": {
+            "value": "A renewal date approaching",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "A renewal date approaching",
+                "charStart": 78,
+                "charEnd": 104
+              }
+            ],
+            "status": "draft"
+          },
+          "doneDefinition": {
+            "value": "a renewal notice is sent and logged",
+            "confidence": "medium",
+            "sourceSpans": [
+              {
+                "quote": "a renewal notice is sent and logged",
+                "charStart": 129,
+                "charEnd": 164
+              }
+            ],
+            "status": "draft"
+          },
+          "frequency": {
+            "value": "twenty renewals occur each month",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "twenty renewals occur each month",
+                "charStart": 172,
+                "charEnd": 204
+              }
+            ],
+            "status": "draft"
+          },
+          "costOfError": {
+            "value": "an auto-lapse of coverage",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "an auto-lapse of coverage",
+                "charStart": 228,
+                "charEnd": 253
+              }
+            ],
+            "status": "draft"
+          }
+        },
+        "candidates": [
+          {
+            "key": "send the renewal notice",
+            "name": {
+              "value": "Send the renewal notice",
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "renewal notice is sent",
+                  "charStart": 131,
+                  "charEnd": 153
+                }
+              ],
+              "status": "draft"
+            },
+            "volume": {
+              "value": 3,
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "twenty renewals occur each month",
+                  "charStart": 172,
+                  "charEnd": 204
+                }
+              ],
+              "status": "draft"
+            },
+            "ruleBound": {
+              "value": 5,
+              "confidence": "medium",
+              "sourceSpans": [
+                {
+                  "quote": "renewal notice is sent and logged",
+                  "charStart": 131,
+                  "charEnd": 164
+                }
+              ],
+              "status": "draft"
+            },
+            "lowJudgement": {
+              "value": 4,
+              "confidence": "medium",
+              "sourceSpans": [
+                {
+                  "quote": "sent and logged",
+                  "charStart": 149,
+                  "charEnd": 164
+                }
+              ],
+              "status": "draft"
+            },
+            "lowBlastRadius": {
+              "value": 4,
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "auto-lapse of coverage",
+                  "charStart": 231,
+                  "charEnd": 253
+                }
+              ],
+              "status": "draft"
+            }
+          }
+        ],
+        "failureModes": [
+          {
+            "field": "worstOutput",
+            "value": {
+              "value": "Let a contract lapse without notice",
+              "confidence": "medium",
+              "sourceSpans": [
+                {
+                  "quote": "missed notice",
+                  "charStart": 208,
+                  "charEnd": 221
+                }
+              ],
+              "status": "draft"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "order-status-email",
+      "kind": "email",
+      "source": "Order status questions are answered by the fulfilment clerk using the order portal. A customer status email triggers it. Done means the customer gets an accurate status reply. There are about eighty such emails a day. A wrong status means an angry customer.",
+      "expected": {
+        "processMap": {
+          "who": "the fulfilment clerk",
+          "systems": [
+            "the order portal"
+          ],
+          "trigger": "A customer status email",
+          "doneDefinition": "the customer gets an accurate status reply",
+          "frequency": "eighty such emails a day",
+          "costOfError": "an angry customer"
+        },
+        "candidates": [
+          {
+            "name": "Look up and reply with order status",
+            "volume": 5,
+            "ruleBound": 4,
+            "lowJudgement": 3,
+            "lowBlastRadius": 4
+          }
+        ],
+        "failureModes": [
+          {
+            "field": "worstOutput",
+            "value": "Send an incorrect order status"
+          }
+        ]
+      },
+      "modelOutput": {
+        "processMap": {
+          "who": {
+            "value": "the fulfilment clerk",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "the fulfilment clerk",
+                "charStart": 39,
+                "charEnd": 59
+              }
+            ],
+            "status": "draft"
+          },
+          "systems": [
+            {
+              "value": "the order portal",
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "the order portal",
+                  "charStart": 66,
+                  "charEnd": 82
+                }
+              ],
+              "status": "draft"
+            }
+          ],
+          "trigger": {
+            "value": "A customer status email",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "A customer status email",
+                "charStart": 84,
+                "charEnd": 107
+              }
+            ],
+            "status": "draft"
+          },
+          "doneDefinition": {
+            "value": "the customer gets an accurate status reply",
+            "confidence": "medium",
+            "sourceSpans": [
+              {
+                "quote": "the customer gets an accurate status reply",
+                "charStart": 132,
+                "charEnd": 174
+              }
+            ],
+            "status": "draft"
+          },
+          "frequency": {
+            "value": "eighty such emails a day",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "eighty such emails a day",
+                "charStart": 192,
+                "charEnd": 216
+              }
+            ],
+            "status": "draft"
+          },
+          "costOfError": {
+            "value": "an angry customer",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "an angry customer",
+                "charStart": 239,
+                "charEnd": 256
+              }
+            ],
+            "status": "draft"
+          }
+        },
+        "candidates": [
+          {
+            "key": "look up and reply with order status",
+            "name": {
+              "value": "Look up and reply with order status",
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "answered by the fulfilment clerk",
+                  "charStart": 27,
+                  "charEnd": 59
+                }
+              ],
+              "status": "draft"
+            },
+            "volume": {
+              "value": 5,
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "eighty such emails a day",
+                  "charStart": 192,
+                  "charEnd": 216
+                }
+              ],
+              "status": "draft"
+            },
+            "ruleBound": {
+              "value": 4,
+              "confidence": "medium",
+              "sourceSpans": [
+                {
+                  "quote": "accurate status reply",
+                  "charStart": 153,
+                  "charEnd": 174
+                }
+              ],
+              "status": "draft"
+            },
+            "lowJudgement": {
+              "value": 3,
+              "confidence": "medium",
+              "sourceSpans": [
+                {
+                  "quote": "accurate status reply",
+                  "charStart": 153,
+                  "charEnd": 174
+                }
+              ],
+              "status": "draft"
+            },
+            "lowBlastRadius": {
+              "value": 4,
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "an angry customer",
+                  "charStart": 239,
+                  "charEnd": 256
+                }
+              ],
+              "status": "draft"
+            }
+          }
+        ],
+        "failureModes": [
+          {
+            "field": "worstOutput",
+            "value": {
+              "value": "Send an incorrect order status",
+              "confidence": "medium",
+              "sourceSpans": [
+                {
+                  "quote": "wrong status",
+                  "charStart": 220,
+                  "charEnd": 232
+                }
+              ],
+              "status": "draft"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "inventory-reorder",
+      "kind": "transcript",
+      "source": "Stock reorders are placed by the warehouse planner in the inventory system. A low-stock alert starts the task. Done means a purchase order is raised for the shortfall. It runs about fifty times a week. A late reorder means a stockout on the floor.",
+      "expected": {
+        "processMap": {
+          "who": "the warehouse planner",
+          "systems": [
+            "the inventory system"
+          ],
+          "trigger": "A low-stock alert",
+          "doneDefinition": "a purchase order is raised for the shortfall",
+          "frequency": "fifty times a week",
+          "costOfError": "a stockout on the floor"
+        },
+        "candidates": [
+          {
+            "name": "Raise reorder purchase orders",
+            "volume": 4,
+            "ruleBound": 5,
+            "lowJudgement": 4,
+            "lowBlastRadius": 3
+          }
+        ],
+        "failureModes": [
+          {
+            "field": "worstOutput",
+            "value": "Fail to reorder and cause a stockout"
+          }
+        ]
+      },
+      "modelOutput": {
+        "processMap": {
+          "who": {
+            "value": "the warehouse planner",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "the warehouse planner",
+                "charStart": 29,
+                "charEnd": 50
+              }
+            ],
+            "status": "draft"
+          },
+          "systems": [
+            {
+              "value": "the inventory system",
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "the inventory system",
+                  "charStart": 54,
+                  "charEnd": 74
+                }
+              ],
+              "status": "draft"
+            }
+          ],
+          "trigger": {
+            "value": "A low-stock alert",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "A low-stock alert",
+                "charStart": 76,
+                "charEnd": 93
+              }
+            ],
+            "status": "draft"
+          },
+          "doneDefinition": {
+            "value": "a purchase order is raised for the shortfall",
+            "confidence": "medium",
+            "sourceSpans": [
+              {
+                "quote": "a purchase order is raised for the shortfall",
+                "charStart": 122,
+                "charEnd": 166
+              }
+            ],
+            "status": "draft"
+          },
+          "frequency": {
+            "value": "fifty times a week",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "fifty times a week",
+                "charStart": 182,
+                "charEnd": 200
+              }
+            ],
+            "status": "draft"
+          },
+          "costOfError": {
+            "value": "a stockout on the floor",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "a stockout on the floor",
+                "charStart": 223,
+                "charEnd": 246
+              }
+            ],
+            "status": "draft"
+          }
+        },
+        "candidates": [
+          {
+            "key": "raise reorder purchase orders",
+            "name": {
+              "value": "Raise reorder purchase orders",
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "placed by the warehouse planner",
+                  "charStart": 19,
+                  "charEnd": 50
+                }
+              ],
+              "status": "draft"
+            },
+            "volume": {
+              "value": 4,
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "fifty times a week",
+                  "charStart": 182,
+                  "charEnd": 200
+                }
+              ],
+              "status": "draft"
+            },
+            "ruleBound": {
+              "value": 5,
+              "confidence": "medium",
+              "sourceSpans": [
+                {
+                  "quote": "purchase order is raised",
+                  "charStart": 124,
+                  "charEnd": 148
+                }
+              ],
+              "status": "draft"
+            },
+            "lowJudgement": {
+              "value": 4,
+              "confidence": "medium",
+              "sourceSpans": [
+                {
+                  "quote": "purchase order is raised",
+                  "charStart": 124,
+                  "charEnd": 148
+                }
+              ],
+              "status": "draft"
+            },
+            "lowBlastRadius": {
+              "value": 3,
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "a stockout on the floor",
+                  "charStart": 223,
+                  "charEnd": 246
+                }
+              ],
+              "status": "draft"
+            }
+          }
+        ],
+        "failureModes": [
+          {
+            "field": "worstOutput",
+            "value": {
+              "value": "Fail to reorder and cause a stockout",
+              "confidence": "medium",
+              "sourceSpans": [
+                {
+                  "quote": "late reorder",
+                  "charStart": 204,
+                  "charEnd": 216
+                }
+              ],
+              "status": "draft"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "kyc-document-check",
+      "kind": "sop",
+      "source": "Identity documents are verified by the compliance officer in the onboarding tool. A new application submission triggers it. Done means the document passes the standard checks. About seventy applications come in weekly. A bad pass means a compliance breach.",
+      "expected": {
+        "processMap": {
+          "who": "the compliance officer",
+          "systems": [
+            "the onboarding tool"
+          ],
+          "trigger": "A new application submission",
+          "doneDefinition": "the document passes the standard checks",
+          "frequency": "seventy applications come in weekly",
+          "costOfError": "a compliance breach"
+        },
+        "candidates": [
+          {
+            "name": "Run the standard document checks",
+            "volume": 4,
+            "ruleBound": 5,
+            "lowJudgement": 3,
+            "lowBlastRadius": 2
+          }
+        ],
+        "failureModes": [
+          {
+            "field": "worstOutput",
+            "value": "Pass a document that should fail checks"
+          }
+        ]
+      },
+      "modelOutput": {
+        "processMap": {
+          "who": {
+            "value": "the compliance officer",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "the compliance officer",
+                "charStart": 35,
+                "charEnd": 57
+              }
+            ],
+            "status": "draft"
+          },
+          "systems": [
+            {
+              "value": "the onboarding tool",
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "the onboarding tool",
+                  "charStart": 61,
+                  "charEnd": 80
+                }
+              ],
+              "status": "draft"
+            }
+          ],
+          "trigger": {
+            "value": "A new application submission",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "A new application submission",
+                "charStart": 82,
+                "charEnd": 110
+              }
+            ],
+            "status": "draft"
+          },
+          "doneDefinition": {
+            "value": "the document passes the standard checks",
+            "confidence": "medium",
+            "sourceSpans": [
+              {
+                "quote": "the document passes the standard checks",
+                "charStart": 135,
+                "charEnd": 174
+              }
+            ],
+            "status": "draft"
+          },
+          "frequency": {
+            "value": "seventy applications come in weekly",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "seventy applications come in weekly",
+                "charStart": 182,
+                "charEnd": 217
+              }
+            ],
+            "status": "draft"
+          },
+          "costOfError": {
+            "value": "a compliance breach",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "a compliance breach",
+                "charStart": 236,
+                "charEnd": 255
+              }
+            ],
+            "status": "draft"
+          }
+        },
+        "candidates": [
+          {
+            "key": "run the standard document checks",
+            "name": {
+              "value": "Run the standard document checks",
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "verified by the compliance officer",
+                  "charStart": 23,
+                  "charEnd": 57
+                }
+              ],
+              "status": "draft"
+            },
+            "volume": {
+              "value": 4,
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "seventy applications come in weekly",
+                  "charStart": 182,
+                  "charEnd": 217
+                }
+              ],
+              "status": "draft"
+            },
+            "ruleBound": {
+              "value": 5,
+              "confidence": "medium",
+              "sourceSpans": [
+                {
+                  "quote": "standard checks",
+                  "charStart": 159,
+                  "charEnd": 174
+                }
+              ],
+              "status": "draft"
+            },
+            "lowJudgement": {
+              "value": 3,
+              "confidence": "medium",
+              "sourceSpans": [
+                {
+                  "quote": "standard checks",
+                  "charStart": 159,
+                  "charEnd": 174
+                }
+              ],
+              "status": "draft"
+            },
+            "lowBlastRadius": {
+              "value": 2,
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "a compliance breach",
+                  "charStart": 236,
+                  "charEnd": 255
+                }
+              ],
+              "status": "draft"
+            }
+          }
+        ],
+        "failureModes": [
+          {
+            "field": "worstOutput",
+            "value": {
+              "value": "Pass a document that should fail checks",
+              "confidence": "medium",
+              "sourceSpans": [
+                {
+                  "quote": "bad pass",
+                  "charStart": 221,
+                  "charEnd": 229
+                }
+              ],
+              "status": "draft"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "timesheet-approval",
+      "kind": "transcript",
+      "source": "Weekly timesheets are approved by the team lead in the scheduling app. A submitted timesheet starts it. Done means the hours reconcile against the roster. There are about forty timesheets a week. A wrong approval means a payroll error.",
+      "expected": {
+        "processMap": {
+          "who": "the team lead",
+          "systems": [
+            "the scheduling app"
+          ],
+          "trigger": "A submitted timesheet",
+          "doneDefinition": "the hours reconcile against the roster",
+          "frequency": "forty timesheets a week",
+          "costOfError": "a payroll error"
+        },
+        "candidates": [
+          {
+            "name": "Reconcile hours against the roster",
+            "volume": 3,
+            "ruleBound": 5,
+            "lowJudgement": 4,
+            "lowBlastRadius": 3
+          }
+        ],
+        "failureModes": [
+          {
+            "field": "worstOutput",
+            "value": "Approve hours that do not match the roster"
+          }
+        ]
+      },
+      "modelOutput": {
+        "processMap": {
+          "who": {
+            "value": "the team lead",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "the team lead",
+                "charStart": 34,
+                "charEnd": 47
+              }
+            ],
+            "status": "draft"
+          },
+          "systems": [
+            {
+              "value": "the scheduling app",
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "the scheduling app",
+                  "charStart": 51,
+                  "charEnd": 69
+                }
+              ],
+              "status": "draft"
+            }
+          ],
+          "trigger": {
+            "value": "A submitted timesheet",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "A submitted timesheet",
+                "charStart": 71,
+                "charEnd": 92
+              }
+            ],
+            "status": "draft"
+          },
+          "doneDefinition": {
+            "value": "the hours reconcile against the roster",
+            "confidence": "medium",
+            "sourceSpans": [
+              {
+                "quote": "the hours reconcile against the roster",
+                "charStart": 115,
+                "charEnd": 153
+              }
+            ],
+            "status": "draft"
+          },
+          "frequency": {
+            "value": "forty timesheets a week",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "forty timesheets a week",
+                "charStart": 171,
+                "charEnd": 194
+              }
+            ],
+            "status": "draft"
+          },
+          "costOfError": {
+            "value": "a payroll error",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "a payroll error",
+                "charStart": 219,
+                "charEnd": 234
+              }
+            ],
+            "status": "draft"
+          }
+        },
+        "candidates": [
+          {
+            "key": "reconcile hours against the roster",
+            "name": {
+              "value": "Reconcile hours against the roster",
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "approved by the team lead",
+                  "charStart": 22,
+                  "charEnd": 47
+                }
+              ],
+              "status": "draft"
+            },
+            "volume": {
+              "value": 3,
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "forty timesheets a week",
+                  "charStart": 171,
+                  "charEnd": 194
+                }
+              ],
+              "status": "draft"
+            },
+            "ruleBound": {
+              "value": 5,
+              "confidence": "medium",
+              "sourceSpans": [
+                {
+                  "quote": "reconcile against the roster",
+                  "charStart": 125,
+                  "charEnd": 153
+                }
+              ],
+              "status": "draft"
+            },
+            "lowJudgement": {
+              "value": 4,
+              "confidence": "medium",
+              "sourceSpans": [
+                {
+                  "quote": "reconcile against the roster",
+                  "charStart": 125,
+                  "charEnd": 153
+                }
+              ],
+              "status": "draft"
+            },
+            "lowBlastRadius": {
+              "value": 3,
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "a payroll error",
+                  "charStart": 219,
+                  "charEnd": 234
+                }
+              ],
+              "status": "draft"
+            }
+          }
+        ],
+        "failureModes": [
+          {
+            "field": "worstOutput",
+            "value": {
+              "value": "Approve hours that do not match the roster",
+              "confidence": "medium",
+              "sourceSpans": [
+                {
+                  "quote": "wrong approval",
+                  "charStart": 198,
+                  "charEnd": 212
+                }
+              ],
+              "status": "draft"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "appointment-reminder",
+      "kind": "email",
+      "source": "Appointment reminders are sent by the clinic coordinator from the booking system. A booking confirmed the day before triggers it. Done means the reminder is delivered to the patient. About ninety reminders go out daily. A missed reminder means a no-show.",
+      "expected": {
+        "processMap": {
+          "who": "the clinic coordinator",
+          "systems": [
+            "the booking system"
+          ],
+          "trigger": "A booking confirmed the day before",
+          "doneDefinition": "the reminder is delivered to the patient",
+          "frequency": "ninety reminders go out daily",
+          "costOfError": "a no-show"
+        },
+        "candidates": [
+          {
+            "name": "Send appointment reminders",
+            "volume": 5,
+            "ruleBound": 5,
+            "lowJudgement": 5,
+            "lowBlastRadius": 4
+          }
+        ],
+        "failureModes": [
+          {
+            "field": "worstOutput",
+            "value": "Fail to remind a patient who then no-shows"
+          }
+        ]
+      },
+      "modelOutput": {
+        "processMap": {
+          "who": {
+            "value": "the clinic coordinator",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "the clinic coordinator",
+                "charStart": 34,
+                "charEnd": 56
+              }
+            ],
+            "status": "draft"
+          },
+          "systems": [
+            {
+              "value": "the booking system",
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "the booking system",
+                  "charStart": 62,
+                  "charEnd": 80
+                }
+              ],
+              "status": "draft"
+            }
+          ],
+          "trigger": {
+            "value": "A booking confirmed the day before",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "A booking confirmed the day before",
+                "charStart": 82,
+                "charEnd": 116
+              }
+            ],
+            "status": "draft"
+          },
+          "doneDefinition": {
+            "value": "the reminder is delivered to the patient",
+            "confidence": "medium",
+            "sourceSpans": [
+              {
+                "quote": "the reminder is delivered to the patient",
+                "charStart": 141,
+                "charEnd": 181
+              }
+            ],
+            "status": "draft"
+          },
+          "frequency": {
+            "value": "ninety reminders go out daily",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "ninety reminders go out daily",
+                "charStart": 189,
+                "charEnd": 218
+              }
+            ],
+            "status": "draft"
+          },
+          "costOfError": {
+            "value": "a no-show",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "a no-show",
+                "charStart": 244,
+                "charEnd": 253
+              }
+            ],
+            "status": "draft"
+          }
+        },
+        "candidates": [
+          {
+            "key": "send appointment reminders",
+            "name": {
+              "value": "Send appointment reminders",
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "sent by the clinic coordinator",
+                  "charStart": 26,
+                  "charEnd": 56
+                }
+              ],
+              "status": "draft"
+            },
+            "volume": {
+              "value": 5,
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "ninety reminders go out daily",
+                  "charStart": 189,
+                  "charEnd": 218
+                }
+              ],
+              "status": "draft"
+            },
+            "ruleBound": {
+              "value": 5,
+              "confidence": "medium",
+              "sourceSpans": [
+                {
+                  "quote": "reminder is delivered",
+                  "charStart": 145,
+                  "charEnd": 166
+                }
+              ],
+              "status": "draft"
+            },
+            "lowJudgement": {
+              "value": 5,
+              "confidence": "medium",
+              "sourceSpans": [
+                {
+                  "quote": "reminder is delivered",
+                  "charStart": 145,
+                  "charEnd": 166
+                }
+              ],
+              "status": "draft"
+            },
+            "lowBlastRadius": {
+              "value": 4,
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "a no-show",
+                  "charStart": 244,
+                  "charEnd": 253
+                }
+              ],
+              "status": "draft"
+            }
+          }
+        ],
+        "failureModes": [
+          {
+            "field": "worstOutput",
+            "value": {
+              "value": "Fail to remind a patient who then no-shows",
+              "confidence": "medium",
+              "sourceSpans": [
+                {
+                  "quote": "missed reminder",
+                  "charStart": 222,
+                  "charEnd": 237
+                }
+              ],
+              "status": "draft"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "data-entry-forms",
+      "kind": "transcript",
+      "source": "Paper intake forms are keyed in by the records clerk into the database. A batch of scanned forms starts it. Done means each form is entered without errors. It happens about two hundred forms a day. A keying error means corrupt records.",
+      "expected": {
+        "processMap": {
+          "who": "the records clerk",
+          "systems": [
+            "the database"
+          ],
+          "trigger": "A batch of scanned forms",
+          "doneDefinition": "each form is entered without errors",
+          "frequency": "two hundred forms a day",
+          "costOfError": "corrupt records"
+        },
+        "candidates": [
+          {
+            "name": "Key scanned forms into the database",
+            "volume": 5,
+            "ruleBound": 4,
+            "lowJudgement": 3,
+            "lowBlastRadius": 3
+          }
+        ],
+        "failureModes": [
+          {
+            "field": "worstOutput",
+            "value": "Enter a form with transposed values"
+          }
+        ]
+      },
+      "modelOutput": {
+        "processMap": {
+          "who": {
+            "value": "the records clerk",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "the records clerk",
+                "charStart": 35,
+                "charEnd": 52
+              }
+            ],
+            "status": "draft"
+          },
+          "systems": [
+            {
+              "value": "the database",
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "the database",
+                  "charStart": 58,
+                  "charEnd": 70
+                }
+              ],
+              "status": "draft"
+            }
+          ],
+          "trigger": {
+            "value": "A batch of scanned forms",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "A batch of scanned forms",
+                "charStart": 72,
+                "charEnd": 96
+              }
+            ],
+            "status": "draft"
+          },
+          "doneDefinition": {
+            "value": "each form is entered without errors",
+            "confidence": "medium",
+            "sourceSpans": [
+              {
+                "quote": "each form is entered without errors",
+                "charStart": 119,
+                "charEnd": 154
+              }
+            ],
+            "status": "draft"
+          },
+          "frequency": {
+            "value": "two hundred forms a day",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "two hundred forms a day",
+                "charStart": 173,
+                "charEnd": 196
+              }
+            ],
+            "status": "draft"
+          },
+          "costOfError": {
+            "value": "corrupt records",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "corrupt records",
+                "charStart": 219,
+                "charEnd": 234
+              }
+            ],
+            "status": "draft"
+          }
+        },
+        "candidates": [
+          {
+            "key": "key scanned forms into the database",
+            "name": {
+              "value": "Key scanned forms into the database",
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "keyed in by the records clerk",
+                  "charStart": 23,
+                  "charEnd": 52
+                }
+              ],
+              "status": "draft"
+            },
+            "volume": {
+              "value": 5,
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "two hundred forms a day",
+                  "charStart": 173,
+                  "charEnd": 196
+                }
+              ],
+              "status": "draft"
+            },
+            "ruleBound": {
+              "value": 4,
+              "confidence": "medium",
+              "sourceSpans": [
+                {
+                  "quote": "entered without errors",
+                  "charStart": 132,
+                  "charEnd": 154
+                }
+              ],
+              "status": "draft"
+            },
+            "lowJudgement": {
+              "value": 3,
+              "confidence": "medium",
+              "sourceSpans": [
+                {
+                  "quote": "entered without errors",
+                  "charStart": 132,
+                  "charEnd": 154
+                }
+              ],
+              "status": "draft"
+            },
+            "lowBlastRadius": {
+              "value": 3,
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "corrupt records",
+                  "charStart": 219,
+                  "charEnd": 234
+                }
+              ],
+              "status": "draft"
+            }
+          }
+        ],
+        "failureModes": [
+          {
+            "field": "worstOutput",
+            "value": {
+              "value": "Enter a form with transposed values",
+              "confidence": "medium",
+              "sourceSpans": [
+                {
+                  "quote": "keying error",
+                  "charStart": 200,
+                  "charEnd": 212
+                }
+              ],
+              "status": "draft"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "shipment-tracking-sop",
+      "kind": "sop",
+      "source": "Outbound shipments are tracked by the logistics coordinator in the carrier portal. A dispatched parcel triggers it. Done means the tracking number is recorded and confirmed. About one hundred parcels ship each day. A lost tracking number means an untraceable parcel.",
+      "expected": {
+        "processMap": {
+          "who": "the logistics coordinator",
+          "systems": [
+            "the carrier portal"
+          ],
+          "trigger": "A dispatched parcel",
+          "doneDefinition": "the tracking number is recorded and confirmed",
+          "frequency": "one hundred parcels ship each day",
+          "costOfError": "an untraceable parcel"
+        },
+        "candidates": [
+          {
+            "name": "Record and confirm tracking numbers",
+            "volume": 5,
+            "ruleBound": 5,
+            "lowJudgement": 4,
+            "lowBlastRadius": 4
+          }
+        ],
+        "failureModes": [
+          {
+            "field": "worstOutput",
+            "value": "Ship a parcel with no recorded tracking"
+          }
+        ]
+      },
+      "modelOutput": {
+        "processMap": {
+          "who": {
+            "value": "the logistics coordinator",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "the logistics coordinator",
+                "charStart": 34,
+                "charEnd": 59
+              }
+            ],
+            "status": "draft"
+          },
+          "systems": [
+            {
+              "value": "the carrier portal",
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "the carrier portal",
+                  "charStart": 63,
+                  "charEnd": 81
+                }
+              ],
+              "status": "draft"
+            }
+          ],
+          "trigger": {
+            "value": "A dispatched parcel",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "A dispatched parcel",
+                "charStart": 83,
+                "charEnd": 102
+              }
+            ],
+            "status": "draft"
+          },
+          "doneDefinition": {
+            "value": "the tracking number is recorded and confirmed",
+            "confidence": "medium",
+            "sourceSpans": [
+              {
+                "quote": "the tracking number is recorded and confirmed",
+                "charStart": 127,
+                "charEnd": 172
+              }
+            ],
+            "status": "draft"
+          },
+          "frequency": {
+            "value": "one hundred parcels ship each day",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "one hundred parcels ship each day",
+                "charStart": 180,
+                "charEnd": 213
+              }
+            ],
+            "status": "draft"
+          },
+          "costOfError": {
+            "value": "an untraceable parcel",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "an untraceable parcel",
+                "charStart": 244,
+                "charEnd": 265
+              }
+            ],
+            "status": "draft"
+          }
+        },
+        "candidates": [
+          {
+            "key": "record and confirm tracking numbers",
+            "name": {
+              "value": "Record and confirm tracking numbers",
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "tracked by the logistics coordinator",
+                  "charStart": 23,
+                  "charEnd": 59
+                }
+              ],
+              "status": "draft"
+            },
+            "volume": {
+              "value": 5,
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "one hundred parcels ship each day",
+                  "charStart": 180,
+                  "charEnd": 213
+                }
+              ],
+              "status": "draft"
+            },
+            "ruleBound": {
+              "value": 5,
+              "confidence": "medium",
+              "sourceSpans": [
+                {
+                  "quote": "recorded and confirmed",
+                  "charStart": 150,
+                  "charEnd": 172
+                }
+              ],
+              "status": "draft"
+            },
+            "lowJudgement": {
+              "value": 4,
+              "confidence": "medium",
+              "sourceSpans": [
+                {
+                  "quote": "recorded and confirmed",
+                  "charStart": 150,
+                  "charEnd": 172
+                }
+              ],
+              "status": "draft"
+            },
+            "lowBlastRadius": {
+              "value": 4,
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "an untraceable parcel",
+                  "charStart": 244,
+                  "charEnd": 265
+                }
+              ],
+              "status": "draft"
+            }
+          }
+        ],
+        "failureModes": [
+          {
+            "field": "worstOutput",
+            "value": {
+              "value": "Ship a parcel with no recorded tracking",
+              "confidence": "medium",
+              "sourceSpans": [
+                {
+                  "quote": "lost tracking number",
+                  "charStart": 217,
+                  "charEnd": 237
+                }
+              ],
+              "status": "draft"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "password-reset-tickets",
+      "kind": "email",
+      "source": "Password reset requests are handled by the help desk in the identity console. A reset request email triggers it. Done means the user can sign in again. There are about sixty resets a day. A wrong reset means a locked-out user.",
+      "expected": {
+        "processMap": {
+          "who": "the help desk",
+          "systems": [
+            "the identity console"
+          ],
+          "trigger": "A reset request email",
+          "doneDefinition": "the user can sign in again",
+          "frequency": "sixty resets a day",
+          "costOfError": "a locked-out user"
+        },
+        "candidates": [
+          {
+            "name": "Process the standard password reset",
+            "volume": 5,
+            "ruleBound": 5,
+            "lowJudgement": 5,
+            "lowBlastRadius": 4
+          }
+        ],
+        "failureModes": [
+          {
+            "field": "worstOutput",
+            "value": "Reset the wrong account"
+          }
+        ]
+      },
+      "modelOutput": {
+        "processMap": {
+          "who": {
+            "value": "the help desk",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "the help desk",
+                "charStart": 39,
+                "charEnd": 52
+              }
+            ],
+            "status": "draft"
+          },
+          "systems": [
+            {
+              "value": "the identity console",
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "the identity console",
+                  "charStart": 56,
+                  "charEnd": 76
+                }
+              ],
+              "status": "draft"
+            }
+          ],
+          "trigger": {
+            "value": "A reset request email",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "A reset request email",
+                "charStart": 78,
+                "charEnd": 99
+              }
+            ],
+            "status": "draft"
+          },
+          "doneDefinition": {
+            "value": "the user can sign in again",
+            "confidence": "medium",
+            "sourceSpans": [
+              {
+                "quote": "the user can sign in again",
+                "charStart": 124,
+                "charEnd": 150
+              }
+            ],
+            "status": "draft"
+          },
+          "frequency": {
+            "value": "sixty resets a day",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "sixty resets a day",
+                "charStart": 168,
+                "charEnd": 186
+              }
+            ],
+            "status": "draft"
+          },
+          "costOfError": {
+            "value": "a locked-out user",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "a locked-out user",
+                "charStart": 208,
+                "charEnd": 225
+              }
+            ],
+            "status": "draft"
+          }
+        },
+        "candidates": [
+          {
+            "key": "process the standard password reset",
+            "name": {
+              "value": "Process the standard password reset",
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "handled by the help desk",
+                  "charStart": 28,
+                  "charEnd": 52
+                }
+              ],
+              "status": "draft"
+            },
+            "volume": {
+              "value": 5,
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "sixty resets a day",
+                  "charStart": 168,
+                  "charEnd": 186
+                }
+              ],
+              "status": "draft"
+            },
+            "ruleBound": {
+              "value": 5,
+              "confidence": "medium",
+              "sourceSpans": [
+                {
+                  "quote": "sign in again",
+                  "charStart": 137,
+                  "charEnd": 150
+                }
+              ],
+              "status": "draft"
+            },
+            "lowJudgement": {
+              "value": 5,
+              "confidence": "medium",
+              "sourceSpans": [
+                {
+                  "quote": "sign in again",
+                  "charStart": 137,
+                  "charEnd": 150
+                }
+              ],
+              "status": "draft"
+            },
+            "lowBlastRadius": {
+              "value": 4,
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "a locked-out user",
+                  "charStart": 208,
+                  "charEnd": 225
+                }
+              ],
+              "status": "draft"
+            }
+          }
+        ],
+        "failureModes": [
+          {
+            "field": "worstOutput",
+            "value": {
+              "value": "Reset the wrong account",
+              "confidence": "medium",
+              "sourceSpans": [
+                {
+                  "quote": "wrong reset",
+                  "charStart": 190,
+                  "charEnd": 201
+                }
+              ],
+              "status": "draft"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "qa-sample-inspection",
+      "kind": "transcript",
+      "source": "Production samples are inspected by the quality analyst at the inspection station. A finished batch arriving starts it. Done means the sample meets the spec tolerances. It runs about forty batches a day. A bad pass means a defective shipment.",
+      "expected": {
+        "processMap": {
+          "who": "the quality analyst",
+          "systems": [
+            "the inspection station"
+          ],
+          "trigger": "A finished batch arriving",
+          "doneDefinition": "the sample meets the spec tolerances",
+          "frequency": "forty batches a day",
+          "costOfError": "a defective shipment"
+        },
+        "candidates": [
+          {
+            "name": "Check samples against spec tolerances",
+            "volume": 4,
+            "ruleBound": 5,
+            "lowJudgement": 3,
+            "lowBlastRadius": 2
+          }
+        ],
+        "failureModes": [
+          {
+            "field": "worstOutput",
+            "value": "Pass a batch that is out of tolerance"
+          }
+        ]
+      },
+      "modelOutput": {
+        "processMap": {
+          "who": {
+            "value": "the quality analyst",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "the quality analyst",
+                "charStart": 36,
+                "charEnd": 55
+              }
+            ],
+            "status": "draft"
+          },
+          "systems": [
+            {
+              "value": "the inspection station",
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "the inspection station",
+                  "charStart": 59,
+                  "charEnd": 81
+                }
+              ],
+              "status": "draft"
+            }
+          ],
+          "trigger": {
+            "value": "A finished batch arriving",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "A finished batch arriving",
+                "charStart": 83,
+                "charEnd": 108
+              }
+            ],
+            "status": "draft"
+          },
+          "doneDefinition": {
+            "value": "the sample meets the spec tolerances",
+            "confidence": "medium",
+            "sourceSpans": [
+              {
+                "quote": "the sample meets the spec tolerances",
+                "charStart": 131,
+                "charEnd": 167
+              }
+            ],
+            "status": "draft"
+          },
+          "frequency": {
+            "value": "forty batches a day",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "forty batches a day",
+                "charStart": 183,
+                "charEnd": 202
+              }
+            ],
+            "status": "draft"
+          },
+          "costOfError": {
+            "value": "a defective shipment",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "a defective shipment",
+                "charStart": 221,
+                "charEnd": 241
+              }
+            ],
+            "status": "draft"
+          }
+        },
+        "candidates": [
+          {
+            "key": "check samples against spec tolerances",
+            "name": {
+              "value": "Check samples against spec tolerances",
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "inspected by the quality analyst",
+                  "charStart": 23,
+                  "charEnd": 55
+                }
+              ],
+              "status": "draft"
+            },
+            "volume": {
+              "value": 4,
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "forty batches a day",
+                  "charStart": 183,
+                  "charEnd": 202
+                }
+              ],
+              "status": "draft"
+            },
+            "ruleBound": {
+              "value": 5,
+              "confidence": "medium",
+              "sourceSpans": [
+                {
+                  "quote": "spec tolerances",
+                  "charStart": 152,
+                  "charEnd": 167
+                }
+              ],
+              "status": "draft"
+            },
+            "lowJudgement": {
+              "value": 3,
+              "confidence": "medium",
+              "sourceSpans": [
+                {
+                  "quote": "spec tolerances",
+                  "charStart": 152,
+                  "charEnd": 167
+                }
+              ],
+              "status": "draft"
+            },
+            "lowBlastRadius": {
+              "value": 2,
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "a defective shipment",
+                  "charStart": 221,
+                  "charEnd": 241
+                }
+              ],
+              "status": "draft"
+            }
+          }
+        ],
+        "failureModes": [
+          {
+            "field": "worstOutput",
+            "value": {
+              "value": "Pass a batch that is out of tolerance",
+              "confidence": "medium",
+              "sourceSpans": [
+                {
+                  "quote": "bad pass",
+                  "charStart": 206,
+                  "charEnd": 214
+                }
+              ],
+              "status": "draft"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "invoice-coding-sop",
+      "kind": "sop",
+      "source": "Incoming bills are coded to ledger accounts by the AP clerk in the accounting suite. A scanned bill arriving triggers it. Done means the bill is coded to the correct account. About one hundred and twenty bills arrive weekly. A miscode means a misstated ledger.",
+      "expected": {
+        "processMap": {
+          "who": "the AP clerk",
+          "systems": [
+            "the accounting suite"
+          ],
+          "trigger": "A scanned bill arriving",
+          "doneDefinition": "the bill is coded to the correct account",
+          "frequency": "one hundred and twenty bills arrive weekly",
+          "costOfError": "a misstated ledger"
+        },
+        "candidates": [
+          {
+            "name": "Code bills to ledger accounts",
+            "volume": 4,
+            "ruleBound": 4,
+            "lowJudgement": 3,
+            "lowBlastRadius": 3
+          }
+        ],
+        "failureModes": [
+          {
+            "field": "worstOutput",
+            "value": "Code a bill to the wrong account"
+          }
+        ]
+      },
+      "modelOutput": {
+        "processMap": {
+          "who": {
+            "value": "the AP clerk",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "the AP clerk",
+                "charStart": 47,
+                "charEnd": 59
+              }
+            ],
+            "status": "draft"
+          },
+          "systems": [
+            {
+              "value": "the accounting suite",
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "the accounting suite",
+                  "charStart": 63,
+                  "charEnd": 83
+                }
+              ],
+              "status": "draft"
+            }
+          ],
+          "trigger": {
+            "value": "A scanned bill arriving",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "A scanned bill arriving",
+                "charStart": 85,
+                "charEnd": 108
+              }
+            ],
+            "status": "draft"
+          },
+          "doneDefinition": {
+            "value": "the bill is coded to the correct account",
+            "confidence": "medium",
+            "sourceSpans": [
+              {
+                "quote": "the bill is coded to the correct account",
+                "charStart": 133,
+                "charEnd": 173
+              }
+            ],
+            "status": "draft"
+          },
+          "frequency": {
+            "value": "one hundred and twenty bills arrive weekly",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "one hundred and twenty bills arrive weekly",
+                "charStart": 181,
+                "charEnd": 223
+              }
+            ],
+            "status": "draft"
+          },
+          "costOfError": {
+            "value": "a misstated ledger",
+            "confidence": "high",
+            "sourceSpans": [
+              {
+                "quote": "a misstated ledger",
+                "charStart": 241,
+                "charEnd": 259
+              }
+            ],
+            "status": "draft"
+          }
+        },
+        "candidates": [
+          {
+            "key": "code bills to ledger accounts",
+            "name": {
+              "value": "Code bills to ledger accounts",
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "coded to ledger accounts by the AP clerk",
+                  "charStart": 19,
+                  "charEnd": 59
+                }
+              ],
+              "status": "draft"
+            },
+            "volume": {
+              "value": 4,
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "one hundred and twenty bills arrive weekly",
+                  "charStart": 181,
+                  "charEnd": 223
+                }
+              ],
+              "status": "draft"
+            },
+            "ruleBound": {
+              "value": 4,
+              "confidence": "medium",
+              "sourceSpans": [
+                {
+                  "quote": "coded to the correct account",
+                  "charStart": 145,
+                  "charEnd": 173
+                }
+              ],
+              "status": "draft"
+            },
+            "lowJudgement": {
+              "value": 3,
+              "confidence": "medium",
+              "sourceSpans": [
+                {
+                  "quote": "coded to the correct account",
+                  "charStart": 145,
+                  "charEnd": 173
+                }
+              ],
+              "status": "draft"
+            },
+            "lowBlastRadius": {
+              "value": 3,
+              "confidence": "high",
+              "sourceSpans": [
+                {
+                  "quote": "a misstated ledger",
+                  "charStart": 241,
+                  "charEnd": 259
+                }
+              ],
+              "status": "draft"
+            }
+          }
+        ],
+        "failureModes": [
+          {
+            "field": "worstOutput",
+            "value": {
+              "value": "Code a bill to the wrong account",
+              "confidence": "medium",
+              "sourceSpans": [
+                {
+                  "quote": "miscode",
+                  "charStart": 227,
+                  "charEnd": 234
+                }
+              ],
+              "status": "draft"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

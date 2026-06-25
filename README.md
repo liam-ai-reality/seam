@@ -18,8 +18,37 @@ npm run dev      # → http://localhost:5173
 
 ```bash
 npm run build    # type-check (tsc) + production build to dist/
-npm test         # run the logic tests (vitest)
+npm test         # run the logic tests (vitest) — includes the offline capture eval gate
 npm run preview  # serve the production build
+```
+
+### Capture-extraction evaluation (#16)
+
+The Capture Copilot extraction is evaluated against a checked-in **golden corpus**
+of synthetic, PII-free `transcript/SOP/email → known-correct Scope` pairs
+(`tests/golden/capture.golden.json`). Scoring is **pure, deterministic, and
+offline** — it never calls the network.
+
+```bash
+npm run eval          # print the field-level scorecard; exits non-zero below the ship threshold
+npm run build:golden  # regenerate the corpus fixture (scripts/build-golden.ts)
+```
+
+The scorer (`src/assist/captureEval.ts`) reports each metric **separately, never
+blended**: ProcessMap precision/recall, seam-candidate set overlap, seam-ranking
+agreement (via the product's own `rankSeams`), and a **fabricated-span rate**
+(how often a cited quote fails `verbatimCheck`) as a hard safety metric. The same
+gate runs in CI via `tests/golden/capture.eval.test.ts`, so a regression fails
+`npm test`.
+
+For the fuzzy free-text fields a programmatic scorer can't grade, a **cross-model
+judge** (`src/assist/captureJudge.ts`) has a *different* model score what the
+extractor produced ("no model grades its own work": opus extracts → sonnet
+judges). It is **network-gated and out-of-band** — it never runs in the offline
+test/CI:
+
+```bash
+SEAM_ASSIST_KEY=sk-ant-... npm run eval:judge   # costs tokens, hits the API
 ```
 
 ## The methodology it encodes

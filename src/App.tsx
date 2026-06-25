@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react'
+import { Suspense, lazy, useEffect, useState } from 'react'
 import { newScope, type StageKey } from './constants'
 import { loadScopes, saveScopes, type SaveResult } from './storage'
 import { sampleScope } from './sample'
 import type { Scope } from './types'
+import { AssistBoundary } from './components/AssistBoundary'
 import { ScopeList } from './components/ScopeList'
 import { Stepper } from './components/Stepper'
 
@@ -11,6 +12,18 @@ type SaveError = Extract<SaveResult, { ok: false }>
 type Theme = 'dark' | 'light'
 
 const THEME_KEY = 'seam.theme'
+
+// The assist surface is OPTIONAL and OFF by default — assistAvailable() returns
+// false, so it makes zero network calls and never changes v1's behaviour (#14).
+// It is code-split into its own lazy chunk; v1 reaches it only through the guarded
+// dynamic import below, which falls back to a null component if the chunk fails to
+// load. v1 is fully functional and offline-safe without it.
+type CapturePanelModule = typeof import('./assist/components/CapturePanel')
+const CapturePanel = lazy<CapturePanelModule['default']>(() =>
+  import('./assist/components/CapturePanel').catch(
+    () => ({ default: () => null }) as unknown as CapturePanelModule,
+  ),
+)
 
 function readTheme(): Theme {
   try {
@@ -96,15 +109,24 @@ export function App() {
 
   function ScopeListView() {
     return (
-      <ScopeList
-        scopes={scopes}
-        onOpen={(id) => setView({ kind: 'scope', id, stage: 'process' })}
-        onCreate={(name) => addScope(newScope(name))}
-        onRename={(id, name) => setScopes((prev) => prev.map((s) => (s.id === id ? { ...s, name } : s)))}
-        onDelete={(id) => setScopes((prev) => prev.filter((s) => s.id !== id))}
-        onLoadSample={() => addScope(sampleScope())}
-        onImport={addScope}
-      />
+      <>
+        <ScopeList
+          scopes={scopes}
+          onOpen={(id) => setView({ kind: 'scope', id, stage: 'process' })}
+          onCreate={(name) => addScope(newScope(name))}
+          onRename={(id, name) => setScopes((prev) => prev.map((s) => (s.id === id ? { ...s, name } : s)))}
+          onDelete={(id) => setScopes((prev) => prev.filter((s) => s.id !== id))}
+          onLoadSample={() => addScope(sampleScope())}
+          onImport={addScope}
+        />
+        <div className="wrap" style={{ marginTop: 'var(--space-6)' }}>
+          <AssistBoundary>
+            <Suspense fallback={null}>
+              <CapturePanel />
+            </Suspense>
+          </AssistBoundary>
+        </div>
+      </>
     )
   }
 }
