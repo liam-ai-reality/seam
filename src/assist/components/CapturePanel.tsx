@@ -1,8 +1,10 @@
 // The lazy-loaded capture surface App mounts behind a dynamic import (#14). It
 // is the single export the app reaches into src/assist/ for capture; everything
-// else (detector, gate, store) is reached through it. Because App imports this
-// ONLY via `import('...')` inside an optional path, deleting src/assist/ leaves
-// v1 building and running — the dynamic import simply never resolves.
+// else (detector, gate, store) is reached through it. The assist layer is OFF by
+// default (assistAvailable() is false), so it makes zero network calls and does
+// not change v1's behaviour. App reaches it ONLY via a guarded `import('...')`
+// that falls back to a null component if the chunk fails to load, so v1 stays
+// fully functional and offline-safe without it.
 //
 // On a gated confirmation it persists the safe (redacted) draft to the 'draft'
 // namespace and surfaces the provenance so the host can record it. The actual

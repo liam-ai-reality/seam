@@ -10,9 +10,11 @@ import { StageIntegration } from './StageIntegration'
 import { StageEval } from './StageEval'
 import { StageReady } from './StageReady'
 
-// The Capture Copilot (#15) is OPTIONAL and isolated behind a dynamic import,
-// exactly like App's CapturePanel. If src/assist/ is deleted the import rejects
-// and the boundary renders nothing — v1 keeps working.
+// The Capture Copilot (#15) is OPTIONAL and OFF by default (assistAvailable() is
+// false), exactly like App's CapturePanel: zero network calls, no change to v1's
+// behaviour. It is code-split into its own lazy chunk and reached only through the
+// guarded dynamic import below, which falls back to a null component if the chunk
+// fails to load. v1 is fully functional and offline-safe without it.
 type CopilotModule = typeof import('../assist/components/CaptureCopilot')
 const CaptureCopilot = lazy<CopilotModule['default']>(() =>
   import('../assist/components/CaptureCopilot').catch(

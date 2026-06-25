@@ -354,9 +354,9 @@ function rebasePayload(p: CapturePayload, delta: number): CapturePayload {
 
 /** Fold one chunk's payload into the accumulator, deduping candidates by key. */
 function mergeChunk(into: CapturePayload, add: CapturePayload, seenKeys: Set<string>): void {
-  // First chunk wins for the single-valued ProcessMap fields (later chunks only
-  // fill blanks). This also protects human-edited fields on re-run when the
-  // caller seeds `into` from current state (see preferExisting below).
+  // First chunk wins for the single-valued ProcessMap fields: later chunks only
+  // fill blanks (fillIfBlank). Systems and failure modes accumulate; candidates
+  // are deduped by key across chunks via seenKeys.
   fillIfBlank(into.processMap, 'who', add.processMap.who)
   fillIfBlank(into.processMap, 'trigger', add.processMap.trigger)
   fillIfBlank(into.processMap, 'doneDefinition', add.processMap.doneDefinition)

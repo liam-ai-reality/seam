@@ -8,8 +8,11 @@
 // PII gate ran) AND only when assistAvailable() is true. Offline, the gate still
 // runs and the user is told extraction is unavailable; nothing is sent.
 //
-// App imports this via a dynamic import behind an AssistBoundary, so deleting
-// src/assist/ leaves v1 building and running.
+// The assist layer is OFF by default (assistAvailable() is false), so it makes
+// zero network calls and does not change v1's behaviour. App reaches this only
+// through a guarded dynamic import behind an AssistBoundary, which falls back to a
+// null component if the chunk fails to load; v1 stays fully functional and
+// offline-safe without it.
 
 import { useState } from 'react'
 import type { Scope } from '../../types'

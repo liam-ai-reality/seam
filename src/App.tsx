@@ -13,9 +13,11 @@ type Theme = 'dark' | 'light'
 
 const THEME_KEY = 'seam.theme'
 
-// The assist surface is OPTIONAL and isolated behind a dynamic import. v1 never
-// statically depends on src/assist/; if that directory is deleted the import
-// rejects and the boundary below renders nothing — v1 keeps working (#14).
+// The assist surface is OPTIONAL and OFF by default — assistAvailable() returns
+// false, so it makes zero network calls and never changes v1's behaviour (#14).
+// It is code-split into its own lazy chunk; v1 reaches it only through the guarded
+// dynamic import below, which falls back to a null component if the chunk fails to
+// load. v1 is fully functional and offline-safe without it.
 type CapturePanelModule = typeof import('./assist/components/CapturePanel')
 const CapturePanel = lazy<CapturePanelModule['default']>(() =>
   import('./assist/components/CapturePanel').catch(

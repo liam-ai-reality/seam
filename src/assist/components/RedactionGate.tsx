@@ -5,8 +5,10 @@
 //
 // This component owns NO network and NO persistence. It produces a GatePass via
 // confirmRedaction (the only gate producer) and hands it to onConfirm. The
-// parent decides what to do with it (send + persist). Deleting src/assist/ takes
-// this with it and leaves v1 untouched.
+// parent decides what to do with it (send + persist). It is part of the OPTIONAL
+// assist layer, which is OFF by default (assistAvailable() is false) and reached
+// only through guarded dynamic imports, so v1 stays fully functional and
+// offline-safe without it.
 //
 // GOTCHA honoured: no [data-enter] wrapper here (those start opacity:0). The
 // panel is visible immediately.
