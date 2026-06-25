@@ -1,9 +1,10 @@
-import { Suspense, lazy, useEffect, useState } from 'react'
+import { Suspense, lazy, useEffect, useReducer, useState } from 'react'
 import { newScope, type StageKey } from './constants'
 import { loadScopes, saveScopes, type SaveResult } from './storage'
 import { sampleScope } from './sample'
 import type { Scope } from './types'
 import { AssistBoundary } from './components/AssistBoundary'
+import { AssistSettings } from './components/AssistSettings'
 import { ScopeList } from './components/ScopeList'
 import { Stepper } from './components/Stepper'
 
@@ -38,6 +39,8 @@ export function App() {
   const [view, setView] = useState<View>({ kind: 'list' })
   const [saveError, setSaveError] = useState<SaveError | null>(null)
   const [theme, setTheme] = useState<Theme>(readTheme)
+  // Re-render the tree after assist settings change so assistAvailable() is re-read.
+  const [, recheckAssist] = useReducer((n: number) => n + 1, 0)
 
   useEffect(() => {
     const result = saveScopes(scopes)
@@ -75,6 +78,7 @@ export function App() {
         <span className="crumb">/ assessments · scoping</span>
         {activeScope && <span className="scope-chip">{activeScope.name}</span>}
         <span className="spacer" />
+        <AssistSettings onChange={recheckAssist} />
         <button
           type="button"
           className="icon-btn"
