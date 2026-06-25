@@ -146,7 +146,7 @@ function shapeSop(v: unknown, base: Sop): Sop {
   }
 }
 
-function shapeEvalPlan(v: unknown, base: EvalPlan): EvalPlan {
+export function shapeEvalPlan(v: unknown, base: EvalPlan): EvalPlan {
   const o = obj(v)
   const grader = GRADER_TYPES.includes(o.grader as GraderType)
     ? (o.grader as GraderType)
@@ -163,7 +163,7 @@ function shapeEvalPlan(v: unknown, base: EvalPlan): EvalPlan {
   }
 }
 
-function shapeIntegration(v: unknown, i: number): Integration {
+export function shapeIntegration(v: unknown, i: number): Integration {
   const o = obj(v)
   const approach = APPROACHES.includes(o.approach as IntegrationApproach)
     ? (o.approach as IntegrationApproach)

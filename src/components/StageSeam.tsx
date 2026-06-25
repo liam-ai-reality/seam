@@ -1,8 +1,24 @@
+import { Suspense, lazy } from 'react'
 import { DEFAULT_WEIGHTS, newId, SEAM_AXES } from '../constants'
 import { rankSeams, suggestedSeamId } from '../logic'
 import type { SeamCandidate } from '../types'
 import type { StageProps } from './stage'
+import { AssistBoundary } from './AssistBoundary'
 import { Field, Pills, StageHeader, TextArea } from './fields'
+
+// The Seam Copilot is an OPTIONAL assist surface, OFF by default
+// (assistAvailable() is false) and code-split into its own lazy chunk. StageSeam
+// reaches it only through this guarded dynamic import behind an AssistBoundary,
+// which falls back to a null component if the chunk fails to load. It only ever
+// PROPOSES extra candidate drafts; it never picks chosenSeamId, and the
+// deterministic rankSeams below stays the ranking authority. v1's Stage-2 form is
+// fully functional and offline-safe without it.
+type SeamCopilotModule = typeof import('../assist/components/SeamCopilot')
+const SeamCopilot = lazy<SeamCopilotModule['default']>(() =>
+  import('../assist/components/SeamCopilot').catch(
+    () => ({ default: () => null }) as unknown as SeamCopilotModule,
+  ),
+)
 
 export function StageSeam({ scope, update }: StageProps) {
   const ranked = rankSeams(scope.seamCandidates, scope.seamWeights)
@@ -129,6 +145,12 @@ export function StageSeam({ scope, update }: StageProps) {
           + Add candidate
         </button>
       </div>
+
+      <AssistBoundary>
+        <Suspense fallback={null}>
+          <SeamCopilot scope={scope} update={update} />
+        </Suspense>
+      </AssistBoundary>
 
       <div className="panel">
         <Field label="Justification" hint="one sentence: why this slice first">

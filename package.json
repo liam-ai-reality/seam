@@ -9,8 +9,10 @@
     "preview": "vite preview",
     "test": "vitest run",
     "eval": "node scripts/eval-capture.ts",
+    "eval:critique": "node scripts/eval-critique.ts",
     "eval:judge": "node scripts/eval-judge.ts",
-    "build:golden": "node scripts/build-golden.ts"
+    "build:golden": "node scripts/build-golden.ts",
+    "build:critique-golden": "npx tsx scripts/build-critique-golden.ts"
   },
   "dependencies": {
     "react": "^19.0.0",

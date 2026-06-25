@@ -1,0 +1,293 @@
+{
+  "version": 1,
+  "planted": [
+    {
+      "id": "invoice-reconciliation",
+      "kind": "planted",
+      "planted": [
+        {
+          "id": "inv-no-baseline",
+          "stageKey": "eval",
+          "field": "evalPlan.baseline",
+          "minSeverity": "major",
+          "note": "No beats-the-human baseline given"
+        },
+        {
+          "id": "inv-vague-done",
+          "stageKey": "process",
+          "field": "processMap.doneDefinition",
+          "minSeverity": "major",
+          "note": "Definition of done is vague (\"handled\")"
+        },
+        {
+          "id": "inv-no-stop",
+          "stageKey": "sop",
+          "field": "sop.stopConditions",
+          "minSeverity": "blocker",
+          "note": "No stop conditions — agent never escalates"
+        }
+      ],
+      "findings": [
+        {
+          "key": "eval::no human baseline to beat — you cannot tell if the agent is an improvement.",
+          "stageKey": "eval",
+          "severity": "major",
+          "claim": "No human baseline to beat — you cannot tell if the agent is an improvement.",
+          "suggestedFix": "State the clerks current accuracy and time-per-invoice as the bar to clear.",
+          "fields": [
+            "evalPlan.baseline"
+          ],
+          "confirmed": true,
+          "confidence": "high"
+        },
+        {
+          "key": "process::definition of done is vague (\"invoices handled\") and unmeasurable.",
+          "stageKey": "process",
+          "severity": "major",
+          "claim": "Definition of done is vague (\"invoices handled\") and unmeasurable.",
+          "suggestedFix": "Define done concretely: matched to a PO, posted to the ledger, exceptions queued.",
+          "fields": [
+            "processMap.doneDefinition"
+          ],
+          "confirmed": true,
+          "confidence": "high"
+        },
+        {
+          "key": "sop::no stop conditions: the agent has no defined point at which it down-tools and escalates.",
+          "stageKey": "sop",
+          "severity": "blocker",
+          "claim": "No stop conditions: the agent has no defined point at which it down-tools and escalates.",
+          "suggestedFix": "Add explicit escalation triggers (missing PO, amount over threshold, low confidence).",
+          "fields": [
+            "sop.stopConditions"
+          ],
+          "confirmed": true,
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "id": "support-ticket-triage",
+      "kind": "planted",
+      "planted": [
+        {
+          "id": "sup-screen-unstable",
+          "stageKey": "integration",
+          "field": "integrations",
+          "minSeverity": "major",
+          "note": "Screen-scraping an unstable UI with no change-detection"
+        },
+        {
+          "id": "sup-no-detection",
+          "stageKey": "eval",
+          "field": "evalPlan.detection",
+          "minSeverity": "major",
+          "note": "No way to detect a bad job in production"
+        }
+      ],
+      "findings": [
+        {
+          "key": "integration::screen-scraping a ui described as changing weekly, with no change-detection planned.",
+          "stageKey": "integration",
+          "severity": "major",
+          "claim": "Screen-scraping a UI described as changing weekly, with no change-detection planned.",
+          "suggestedFix": "Pin selectors, add screenshot diffing and selector-miss alerts, or push for an API.",
+          "fields": [
+            "integrations",
+            "integration.approach"
+          ],
+          "confirmed": true,
+          "confidence": "high"
+        },
+        {
+          "key": "eval::no detection mechanism: a mis-triaged ticket would go unnoticed.",
+          "stageKey": "eval",
+          "severity": "major",
+          "claim": "No detection mechanism: a mis-triaged ticket would go unnoticed.",
+          "suggestedFix": "Add a daily reconciliation or sampling pass that surfaces mis-routes.",
+          "fields": [
+            "evalPlan.detection"
+          ],
+          "confirmed": true,
+          "confidence": "high"
+        },
+        {
+          "key": "seam::the chosen seam mixes two sub-tasks; consider splitting for a cleaner first assignment.",
+          "stageKey": "seam",
+          "severity": "minor",
+          "claim": "The chosen seam mixes two sub-tasks; consider splitting for a cleaner first Assignment.",
+          "suggestedFix": "Carve triage from routing so the first Assignment is narrower.",
+          "fields": [
+            "seamJustification"
+          ],
+          "confirmed": true,
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "id": "order-entry-rekeying",
+      "kind": "planted",
+      "planted": [
+        {
+          "id": "ord-no-thresholds",
+          "stageKey": "sop",
+          "field": "sop.thresholds",
+          "minSeverity": "major",
+          "note": "No thresholds/allow-lists for what the agent may act on"
+        },
+        {
+          "id": "ord-blast-radius",
+          "stageKey": "seam",
+          "field": "seamCandidates",
+          "minSeverity": "major",
+          "note": "Chosen seam has high blast radius (irreversible writes)"
+        },
+        {
+          "id": "ord-no-offline",
+          "stageKey": "eval",
+          "field": "evalPlan.offline",
+          "minSeverity": "blocker",
+          "note": "No offline eval before scaling"
+        }
+      ],
+      "findings": [
+        {
+          "key": "sop::no thresholds or allow-lists: nothing bounds what the agent may auto-process.",
+          "stageKey": "sop",
+          "severity": "major",
+          "claim": "No thresholds or allow-lists: nothing bounds what the agent may auto-process.",
+          "suggestedFix": "Add value caps and an allow-list of order types eligible for auto-entry.",
+          "fields": [
+            "sop.thresholds"
+          ],
+          "confirmed": true,
+          "confidence": "high"
+        },
+        {
+          "key": "seam::chosen seam writes irreversible orders directly — blast radius is high for a first assignment.",
+          "stageKey": "seam",
+          "severity": "major",
+          "claim": "Chosen seam writes irreversible orders directly — blast radius is high for a first Assignment.",
+          "suggestedFix": "Prefer a reversible seam first, or stage writes behind human approval until trust is earned.",
+          "fields": [
+            "seamCandidates",
+            "seamJustification"
+          ],
+          "confirmed": true,
+          "confidence": "high"
+        },
+        {
+          "key": "eval::no offline evaluation: there is no golden set or shadow-run before going live.",
+          "stageKey": "eval",
+          "severity": "blocker",
+          "claim": "No offline evaluation: there is no golden set or shadow-run before going live.",
+          "suggestedFix": "Assemble a labelled case set, shadow-run, and set a ship threshold before scaling.",
+          "fields": [
+            "evalPlan.offline"
+          ],
+          "confirmed": true,
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "id": "expense-approval",
+      "kind": "planted",
+      "planted": [
+        {
+          "id": "exp-no-human",
+          "stageKey": "sop",
+          "field": "sop.needsApproval",
+          "minSeverity": "major",
+          "note": "Nothing requires human approval — full autonomy on money"
+        },
+        {
+          "id": "exp-no-cost-weight",
+          "stageKey": "eval",
+          "field": "evalPlan.costWeightedQuality",
+          "minSeverity": "minor",
+          "note": "No cost-weighting of errors"
+        }
+      ],
+      "findings": [
+        {
+          "key": "sop::no human-approval gate on financial approvals — the agent can approve any amount alone.",
+          "stageKey": "sop",
+          "severity": "major",
+          "claim": "No human-approval gate on financial approvals — the agent can approve any amount alone.",
+          "suggestedFix": "Require human sign-off above a value threshold and for any policy exception.",
+          "fields": [
+            "sop.needsApproval",
+            "sop.agentDecides"
+          ],
+          "confirmed": true,
+          "confidence": "high"
+        },
+        {
+          "key": "eval::errors are not cost-weighted: a wrong high-value approval is treated like a trivial one.",
+          "stageKey": "eval",
+          "severity": "minor",
+          "claim": "Errors are not cost-weighted: a wrong high-value approval is treated like a trivial one.",
+          "suggestedFix": "Weight the quality metric so expensive mistakes dominate the score.",
+          "fields": [
+            "evalPlan.costWeightedQuality"
+          ],
+          "confirmed": true,
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "id": "data-migration-mapping",
+      "kind": "planted",
+      "planted": [
+        {
+          "id": "dat-no-who",
+          "stageKey": "process",
+          "field": "processMap.who",
+          "minSeverity": "minor",
+          "note": "Who does it today is unstated"
+        },
+        {
+          "id": "dat-no-cost",
+          "stageKey": "process",
+          "field": "processMap.costOfError",
+          "minSeverity": "major",
+          "note": "Cost of error unstated for an irreversible migration"
+        }
+      ],
+      "findings": [
+        {
+          "key": "process::it is unclear who performs this today, so the agent has no behaviour to match.",
+          "stageKey": "process",
+          "severity": "minor",
+          "claim": "It is unclear who performs this today, so the agent has no behaviour to match.",
+          "suggestedFix": "Name the current owner(s) and capture their tacit rules.",
+          "fields": [
+            "processMap.who"
+          ],
+          "confirmed": true,
+          "confidence": "high"
+        },
+        {
+          "key": "process::no stated cost of error for a one-way data migration — the risk is invisible.",
+          "stageKey": "process",
+          "severity": "major",
+          "claim": "No stated cost of error for a one-way data migration — the risk is invisible.",
+          "suggestedFix": "State the downstream cost of a mis-mapped field so guardrails can be sized.",
+          "fields": [
+            "processMap.costOfError"
+          ],
+          "confirmed": true,
+          "confidence": "high"
+        }
+      ]
+    }
+  ],
+  "clean": {
+    "id": "sample-claims-intake",
+    "kind": "clean",
+    "findings": []
+  }
+}
