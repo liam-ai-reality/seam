@@ -8,6 +8,13 @@ import type {
 
 export const newId = (): string => crypto.randomUUID()
 
+/**
+ * Current Scope schema version. Stamped onto every Scope at creation and
+ * defaulted by migrate() for older stored scopes that predate the field, so
+ * future migrations can branch on it rather than coercing data away blind.
+ */
+export const SCHEMA_VERSION = 1
+
 export const SEAM_AXES = [
   { key: 'volume', label: 'Volume', hint: 'How much of it there is' },
   { key: 'ruleBound', label: 'Rule-bound', hint: 'How well-defined the rules are' },
@@ -116,6 +123,7 @@ export function newScope(name: string): Scope {
   const now = new Date().toISOString()
   return {
     id: newId(),
+    schemaVersion: SCHEMA_VERSION,
     name,
     createdAt: now,
     updatedAt: now,

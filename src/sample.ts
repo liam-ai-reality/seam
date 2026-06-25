@@ -1,4 +1,4 @@
-import { newId, newPillars } from './constants'
+import { newId, newPillars, SCHEMA_VERSION } from './constants'
 import { recommendApproach } from './logic'
 import type { IntegrationApproach, Scope } from './types'
 
@@ -34,6 +34,7 @@ export function sampleScope(): Scope {
 
   return {
     id: newId(),
+    schemaVersion: SCHEMA_VERSION,
     name: 'Sample — Claims intake triage',
     createdAt: now,
     updatedAt: now,

@@ -2,6 +2,7 @@ import { Suspense, lazy, useMemo, useState } from 'react'
 import { generateBrief } from '../brief'
 import type { StageKey } from '../constants'
 import { isReady, pillarsDone, stageStatuses } from '../logic'
+import { exportModuleSummary, moduleSummaryText } from '../cockpit'
 import { exportScope } from '../storage'
 import type { StageReadyProps } from './stage'
 import { AssistBoundary } from './AssistBoundary'
@@ -26,6 +27,7 @@ export function StageReady({ scope, update, setStage }: StageReadyProps) {
   const ready = isReady(scope)
   const brief = useMemo(() => generateBrief(scope), [scope])
   const [copied, setCopied] = useState(false)
+  const [cockpitCopied, setCockpitCopied] = useState(false)
 
   const setPillar = (key: string, patch: { handling?: string; done?: boolean }) =>
     update((s) => ({ ...s, pillars: s.pillars.map((p) => (p.key === key ? { ...p, ...patch } : p)) }))
@@ -43,6 +45,13 @@ export function StageReady({ scope, update, setStage }: StageReadyProps) {
     a.download = 'scoping-brief.md'
     a.click()
     URL.revokeObjectURL(url)
+  }
+  // The cockpit payload is the PII-free ModuleSummary — the same unit the corpus
+  // priors reduce over. Copy/Export it locally, exactly like exportScope: no network.
+  const copyCockpit = async () => {
+    await navigator.clipboard.writeText(moduleSummaryText(scope))
+    setCockpitCopied(true)
+    setTimeout(() => setCockpitCopied(false), 1500)
   }
 
   return (
@@ -131,6 +140,8 @@ export function StageReady({ scope, update, setStage }: StageReadyProps) {
             <button onClick={download} className="btn ghost sm">Download .md</button>
             <button onClick={() => window.print()} className="btn ghost sm">Print</button>
             <button onClick={() => exportScope(scope)} className="btn ghost sm">Export JSON</button>
+            <button onClick={copyCockpit} className="btn ghost sm">{cockpitCopied ? 'Copied ✓' : 'Copy cockpit payload'}</button>
+            <button onClick={() => exportModuleSummary(scope)} className="btn ghost sm">Cockpit JSON</button>
           </div>
         </div>
         <pre
