@@ -163,7 +163,7 @@ export function shapeEvalPlan(v: unknown, base: EvalPlan): EvalPlan {
   }
 }
 
-function shapeIntegration(v: unknown, i: number): Integration {
+export function shapeIntegration(v: unknown, i: number): Integration {
   const o = obj(v)
   const approach = APPROACHES.includes(o.approach as IntegrationApproach)
     ? (o.approach as IntegrationApproach)

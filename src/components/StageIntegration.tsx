@@ -1,8 +1,25 @@
+import { Suspense, lazy } from 'react'
 import { INTEGRATION_APPROACHES } from '../constants'
 import { approachNotes, approachWarnings, recommendApproach, reconcileIntegrations } from '../logic'
 import type { Integration, IntegrationApproach } from '../types'
 import type { StageProps } from './stage'
+import { AssistBoundary } from './AssistBoundary'
 import { Field, StageHeader, TextArea, TextInput, YesNo } from './fields'
+
+// The Integration Copilot is an OPTIONAL assist surface, OFF by default
+// (assistAvailable() is false) and code-split into its own lazy chunk.
+// StageIntegration reaches it only through this guarded dynamic import behind an
+// AssistBoundary, which falls back to a null component if the chunk fails to load.
+// It only ever drafts NOTES (and optionally authType); it never writes
+// Integration.approach, and the deterministic recommendApproach()/approachWarnings()
+// output above stays the authority. v1's Stage-4 form is fully functional and
+// offline-safe without it.
+type IntegrationCopilotModule = typeof import('../assist/components/IntegrationCopilot')
+const IntegrationCopilot = lazy<IntegrationCopilotModule['default']>(() =>
+  import('../assist/components/IntegrationCopilot').catch(
+    () => ({ default: () => null }) as unknown as IntegrationCopilotModule,
+  ),
+)
 
 const APPROACH_KEYS = Object.keys(INTEGRATION_APPROACHES) as IntegrationApproach[]
 
@@ -110,6 +127,22 @@ export function StageIntegration({ scope, update }: StageProps) {
             <Field label="Notes to capture">
               <TextArea value={row.notes} onChange={(v) => patch(row, { notes: v })} placeholder="Auth, idempotency, brittleness, data checks..." rows={2} />
             </Field>
+
+            {/* The copilot accepts notes/authType into the PERSISTED integration by
+                id, so it only mounts once this row has been saved (the user has
+                answered at least one question). Pass the persisted row so the id
+                matches scope.integrations. */}
+            {(() => {
+              const persisted = scope.integrations.find((i) => i.systemId === row.systemId)
+              if (!persisted) return null
+              return (
+                <AssistBoundary>
+                  <Suspense fallback={null}>
+                    <IntegrationCopilot integration={persisted} update={update} />
+                  </Suspense>
+                </AssistBoundary>
+              )
+            })()}
           </div>
         )
       })}
