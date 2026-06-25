@@ -21,15 +21,115 @@ export type SaveResult =
   | { ok: true }
   | { ok: false; kind: 'quota' | 'blocked'; message: string }
 
+/**
+ * Read the corpus with per-scope fault isolation: one malformed scope is
+ * dropped (or salvaged) without taking down the rest, and a top-level array
+ * parse failure falls back to best-effort element recovery instead of nuking
+ * everything. Never throws — a React initializer can call it directly.
+ */
 export function loadScopes(): Scope[] {
+  let raw: string | null = null
   try {
-    const raw = localStorage.getItem(KEY)
-    if (!raw) return []
-    const parsed: unknown = JSON.parse(raw)
-    return Array.isArray(parsed) ? parsed.map(migrate) : []
+    raw = localStorage.getItem(KEY)
   } catch {
+    // Storage unavailable (private mode / disabled) — behave as empty.
     return []
   }
+  if (!raw) return []
+
+  const elements = parseCorpusElements(raw)
+  return migrateAll(elements)
+}
+
+/**
+ * Best-effort split of the stored corpus into per-scope JSON values. Tries a
+ * clean array parse first; on failure (one corrupt blob breaks the whole
+ * array) it salvages whatever well-formed top-level elements it can.
+ */
+function parseCorpusElements(raw: string): unknown[] {
+  try {
+    const parsed: unknown = JSON.parse(raw)
+    if (Array.isArray(parsed)) return parsed
+    // A lone object that isn't wrapped in an array — salvage it as one scope.
+    if (parsed && typeof parsed === 'object') return [parsed]
+    return []
+  } catch {
+    return salvageArrayElements(raw)
+  }
+}
+
+/**
+ * Scan a malformed array string and pull out each top-level element span,
+ * parsing the ones that are individually valid. A single broken element no
+ * longer poisons its siblings.
+ */
+function salvageArrayElements(raw: string): unknown[] {
+  const open = raw.indexOf('[')
+  const close = raw.lastIndexOf(']')
+  if (open === -1 || close <= open) return []
+  const out: unknown[] = []
+  let depth = 0
+  let inStr = false
+  let escaped = false
+  let start = -1
+  for (let i = open + 1; i < close; i++) {
+    const ch = raw[i]
+    if (inStr) {
+      if (escaped) escaped = false
+      else if (ch === '\\') escaped = true
+      else if (ch === '"') inStr = false
+      continue
+    }
+    if (ch === '"') {
+      inStr = true
+      if (depth === 0 && start === -1) start = i
+      continue
+    }
+    if (ch === '{' || ch === '[') {
+      if (depth === 0 && start === -1) start = i
+      depth++
+      continue
+    }
+    if (ch === '}' || ch === ']') {
+      depth--
+      if (depth === 0 && start !== -1) {
+        pushParsed(out, raw.slice(start, i + 1))
+        start = -1
+      }
+      continue
+    }
+    if (depth === 0 && ch === ',') {
+      if (start !== -1) {
+        pushParsed(out, raw.slice(start, i))
+        start = -1
+      }
+      continue
+    }
+    if (depth === 0 && start === -1 && ch !== undefined && !/\s/.test(ch)) start = i
+  }
+  if (start !== -1) pushParsed(out, raw.slice(start, close))
+  return out
+}
+
+function pushParsed(out: unknown[], span: string): void {
+  try {
+    out.push(JSON.parse(span))
+  } catch {
+    // Individually-corrupt element — drop it, keep the rest.
+  }
+}
+
+/** Migrate each element under its own try/catch so one throw can't sink the array. */
+function migrateAll(elements: unknown[]): Scope[] {
+  const out: Scope[] = []
+  for (const el of elements) {
+    try {
+      out.push(migrate(el))
+    } catch {
+      // A scope that even migrate() can't shape is dropped, not fatal.
+    }
+  }
+  return out
 }
 
 /**
@@ -199,12 +299,17 @@ function shapePillars(v: unknown): Pillar[] {
   })
 }
 
+/** Coerce to a positive-integer schema version; anything invalid defaults. */
+const schemaVer = (v: unknown, fallback: number): number =>
+  typeof v === 'number' && Number.isInteger(v) && v >= 1 ? v : fallback
+
 /** Shape an arbitrary (possibly partial / corrupt) object into a full Scope. */
 function migrate(s: unknown): Scope {
   const o = obj(s)
   const base = newScope(str(o.name, 'Untitled'))
   return {
     id: str(o.id, base.id),
+    schemaVersion: schemaVer(o.schemaVersion, base.schemaVersion),
     name: str(o.name, base.name),
     createdAt: str(o.createdAt, base.createdAt),
     updatedAt: str(o.updatedAt, base.updatedAt),

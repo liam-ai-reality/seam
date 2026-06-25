@@ -87,6 +87,8 @@ export interface Pillar {
 /** A Scope = one customer process being scoped into an Assignment. */
 export interface Scope {
   id: ID
+  /** Per-scope schema version, so future migrations can branch instead of coercing blind. */
+  schemaVersion: number
   name: string
   createdAt: string
   updatedAt: string
