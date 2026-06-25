@@ -146,7 +146,7 @@ function shapeSop(v: unknown, base: Sop): Sop {
   }
 }
 
-function shapeEvalPlan(v: unknown, base: EvalPlan): EvalPlan {
+export function shapeEvalPlan(v: unknown, base: EvalPlan): EvalPlan {
   const o = obj(v)
   const grader = GRADER_TYPES.includes(o.grader as GraderType)
     ? (o.grader as GraderType)

@@ -8,8 +8,8 @@
 // edit. The Sourced wrapper is unwrapped here; only its `value` is applied, and
 // only through a shaper.
 
-import { shapeCandidate, shapeProcessMap, axis } from '../storage'
-import type { Scope, SeamCandidate } from '../types'
+import { shapeCandidate, shapeEvalPlan, shapeProcessMap, axis } from '../storage'
+import type { EvalPlan, Scope, SeamCandidate } from '../types'
 import type { Sourced } from './types'
 
 /** A Scope reducer — the shape App.tsx's `update` expects. */
@@ -22,6 +22,7 @@ export type ScopeReducer = (s: Scope) => Scope
  * - `processMap`            → whole ProcessMap via shapeProcessMap
  * - `seamCandidate`         → append a candidate via shapeCandidate
  * - `seamCandidateAxis`     → set one axis on one candidate via axis()
+ * - `evalPlanText`          → set one free-text EvalPlan field via shapeEvalPlan
  */
 export type AcceptTarget =
   | { field: 'processMap' }
@@ -30,6 +31,16 @@ export type AcceptTarget =
       field: 'seamCandidateAxis'
       candidateId: string
       axis: 'volume' | 'ruleBound' | 'lowJudgement' | 'lowBlastRadius'
+    }
+  | {
+      // A single free-text EvalPlan field the eval drafter (#18) proposes. The
+      // accepted string is routed through the EXISTING shapeEvalPlan coercer
+      // (with the current plan as the base, so only this field is overwritten) —
+      // no new write path, no parallel validator. Restricted to the free-text
+      // fields; grader is the deterministic recommendGrader's decision, never set
+      // here.
+      field: 'evalPlanText'
+      key: 'offline' | 'online' | 'worstOutput' | 'detection' | 'costWeightedQuality' | 'baseline'
     }
 
 /**
@@ -63,6 +74,15 @@ export function acceptSourced<T>(target: AcceptTarget, sourced: Sourced<T>): Sco
           c.id === target.candidateId ? { ...c, [target.axis]: clamped } : c,
         ),
       })
+    }
+
+    case 'evalPlanText': {
+      // Coerce the accepted string to text and route the single-field patch
+      // through the existing shapeEvalPlan, basing on the current plan so the
+      // other fields are preserved. Same shaper that loads/imports a Scope.
+      const text = typeof value === 'string' ? value : String(value)
+      const patch: Partial<EvalPlan> = { [target.key]: text }
+      return (s) => ({ ...s, evalPlan: shapeEvalPlan(patch, s.evalPlan) })
     }
   }
 }

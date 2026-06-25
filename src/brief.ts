@@ -43,6 +43,30 @@ export function execSummary(s: Scope): string {
 
 const lower = (v: string) => v.charAt(0).toLowerCase() + v.slice(1)
 
+/**
+ * Judge-validation status for the brief (#18). PURE.
+ *
+ * An LLM-as-judge grader is only trustworthy once it has been validated against
+ * human labels. The eval drafter writes that validation as a PLAN (drafted into
+ * evalPlan.offline / evalPlan.online), which is un-checked-off content — a plan,
+ * not evidence. So until the eval text records a measured agreement rate against
+ * human-labelled cases, an llm-judge reads as INCOMPLETE here, regardless of
+ * whether the deterministic readiness gate (which only checks for non-empty text)
+ * is satisfied. Programmatic / reference / human graders are not judged here.
+ */
+export type JudgeValidationStatus = 'n/a' | 'validated' | 'incomplete'
+
+export function judgeValidationStatus(s: Scope): JudgeValidationStatus {
+  if (s.evalPlan.grader !== 'llm-judge') return 'n/a'
+  const text = `${s.evalPlan.offline} ${s.evalPlan.online}`.toLowerCase()
+  // Evidence the judge was actually validated against humans: a human-agreement
+  // signal (agreement / agree / cohen / kappa / correlation) tied to a number/%.
+  const hasAgreementSignal = /agreement|agree|cohen|kappa|correlation/.test(text)
+  const hasNumber = /\d/.test(text)
+  const hasHuman = /human|label|annotat/.test(text)
+  return hasAgreementSignal && hasNumber && hasHuman ? 'validated' : 'incomplete'
+}
+
 /** The full sectioned scoping brief, as Markdown. */
 export function generateBrief(s: Scope): string {
   const pm = s.processMap
@@ -117,6 +141,21 @@ export function generateBrief(s: Scope): string {
   out.push(`- **Cost-weighted quality:** ${dash(ep.costWeightedQuality)}`)
   out.push(`- **Beats-the-human baseline:** ${dash(ep.baseline)}`)
   out.push(`- **Grader:** ${GRADERS[ep.grader].label} — ${GRADERS[ep.grader].note}`)
+  // An LLM-as-judge must be validated against humans before it can be trusted.
+  // The rubric and its validation plan are rendered TOGETHER, and an unvalidated
+  // judge reads as ⬜ INCOMPLETE here (a judge that grades work it hasn't been
+  // proven against is not ready), independent of the readiness gate.
+  if (ep.grader === 'llm-judge') {
+    const status = judgeValidationStatus(s)
+    const mark = status === 'validated' ? '✅' : '⬜'
+    const label = status === 'validated' ? 'VALIDATED' : 'INCOMPLETE'
+    out.push(
+      `- ${mark} **Judge validation (${label}):** an LLM judge must be validated against ` +
+        `human-labelled cases at a target agreement rate, with a re-check cadence, before it ` +
+        `is trusted. The rubric and this validation plan ship together; the rubric is not ` +
+        `usable until the plan is run.`,
+    )
+  }
   out.push('')
 
   // Pillars

@@ -1,8 +1,24 @@
+import { Suspense, lazy } from 'react'
 import { GRADER_LADDER, GRADERS } from '../constants'
 import { recommendGrader } from '../logic'
 import type { GraderType } from '../types'
 import type { StageProps } from './stage'
+import { AssistBoundary } from './AssistBoundary'
 import { Field, StageHeader, TextArea, Toggle } from './fields'
+
+// The eval drafter (#18) is an OPTIONAL assist surface, OFF by default
+// (assistAvailable() is false) and code-split into its own lazy chunk. StageEval
+// reaches it only through this guarded dynamic import behind an AssistBoundary,
+// which falls back to a null component if the chunk fails to load. It only
+// PROPOSES Sourced drafts (accepted through the normal editor); it never sets the
+// grader or auto-applies anything, and makes zero network calls offline. v1's
+// Stage-5 form below stays fully functional and offline-safe without it.
+type EvalDraftPanelModule = typeof import('../assist/components/EvalDraftPanel')
+const EvalDraftPanel = lazy<EvalDraftPanelModule['default']>(() =>
+  import('../assist/components/EvalDraftPanel').catch(
+    () => ({ default: () => null }) as unknown as EvalDraftPanelModule,
+  ),
+)
 
 export function StageEval({ scope, update }: StageProps) {
   const ep = scope.evalPlan
@@ -23,6 +39,12 @@ export function StageEval({ scope, update }: StageProps) {
   return (
     <div className="stack" data-enter>
       <StageHeader n={5} title="Failure modes & eval" blurb="The worst wrong output, how you'd catch it, and the plan to prove the agent before — and after — you scale it." />
+
+      <AssistBoundary>
+        <Suspense fallback={null}>
+          <EvalDraftPanel scope={scope} update={update} />
+        </Suspense>
+      </AssistBoundary>
 
       <div className="panel stack">
         <Field label="Worst wrong output">
